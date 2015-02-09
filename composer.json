@@ -1,0 +1,25 @@
+{
+	"name": "phpish/phpish-skeleton",
+	"type": "project",
+	"description": "Skeleton app for phpish",
+	"keywords": ["skeleton"],
+	"homepage": "https://github.com/nashjain/phpish-skeleton",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Naresh Jain",
+			"email": "nashjain@gmail.com"
+		}
+	],
+
+	"require": {
+		"php": ">=5.3.0",
+		"phpish/app": "dev-master",
+		"phpish/template": "dev-master",
+		"phpish/mysql": "dev-master",
+		"phpish/http": "dev-master"
+	},
+	"config": {
+		"github-protocols": ["https", "git", "ssh"]
+	}
+}

@@ -1,0 +1,37 @@
+
+	DirectoryIndex index.php
+
+	# Deny directory listings
+	Options -Indexes
+
+	# Follow symbolic links
+	Options +FollowSymLinks
+
+	# Disable Content Negotiation to stop `RewriteCond %{REQUEST_FILENAME} !-f` from matching .php files
+	# /post will match /post.php if this is enabled
+	Options -Multiviews
+
+
+	<IfModule mod_rewrite.c>
+
+		RewriteEngine On
+
+		RewriteCond %{REQUEST_FILENAME} -f
+		RewriteRule ^.*$ - [L]
+
+		# If REQUEST_URI has more than one slash (i.e., this .htaccess is in a subdirectory)
+		# and if the substring of REQUEST_URI starting at the 2nd path segment is the same as the URL-path being matched
+		# then set an env var BASE to the first segment of REQUEST_URI
+		RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+		RewriteRule ^(.*) - [E=BASE:%1]
+
+		RewriteRule  .*  %{ENV:BASE}/index.php [L]
+
+	</IfModule>
+
+
+	# Protect .htaccess
+	<Files .htaccess>
+		order deny,allow
+		deny from all
+	</Files>

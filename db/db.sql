@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS `table_name`;
+
+CREATE TABLE `table_name` (
+  `col_1` varchar(100) NOT NULL,
+  `col_2` varchar(255) NOT NULL,
+  `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`col_1`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
