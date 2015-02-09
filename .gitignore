@@ -2,3 +2,6 @@
 .DS_Store
 vendor
 composer.lock
+development.conf.php
+production.conf.php
+deploy.sh
