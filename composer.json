@@ -1,9 +1,9 @@
 {
-	"name": "phpish/phpish-skeleton",
+	"name": "nashjain/feedback360",
 	"type": "project",
-	"description": "Skeleton app for phpish",
+	"description": "360 Degree Feedback App",
 	"keywords": ["skeleton"],
-	"homepage": "https://github.com/nashjain/phpish-skeleton",
+	"homepage": "https://github.com/nashjain/feedback360",
 	"license": "MIT",
 	"authors": [
 		{
@@ -17,7 +17,9 @@
 		"phpish/app": "dev-master",
 		"phpish/template": "dev-master",
 		"phpish/mysql": "dev-master",
-		"phpish/http": "dev-master"
+		"phpish/http": "dev-master",
+        "swiftmailer/swiftmailer": "5.1.*@dev",
+        "sergeytsalkov/meekrodb": "v2.2.1"
 	},
 	"config": {
 		"github-protocols": ["https", "git", "ssh"]

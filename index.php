@@ -2,7 +2,6 @@
 	require __DIR__.'/vendor/autoload.php';
 
 	use phpish\app;
-	use phpish\mysql;
 	use phpish\template;
 
     require __DIR__.'/path.config.php';
@@ -27,10 +26,25 @@
         return "";
     }
 
+    function meekrodb_setup()
+    {
+        include_once VENDOR_PATH.'/sergeytsalkov/meekrodb/db.class.php';
+        DB::$user = DB_USER;
+        DB::$password = DB_PASSWORD;
+        DB::$dbName = DB_DATABASE_NAME;
+        DB::$encoding = 'utf8';
+        DB::$error_handler = 'my_error_handler';
+    }
+
+    function my_error_handler($params)
+    {
+        set_flash_msg('error', $params['error']);
+        header('Location: /');
+    }
 
     app\any('.*', function($req) {
         session_start();
-//        mysql\connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE_NAME);
+        meekrodb_setup();
         return app\next($req);
     });
 
@@ -42,12 +56,16 @@
         return app\response_301($url);
     });
 
-    app\path_macro(['/', '/hello', '/hello/.*'], function() {
+    app\path_macro(['/'], function() {
         require CONTROLLER_DIR . 'app_request_handler.php';
     });
 
     app\path_macro(['/user/.*'], function() {
         require CONTROLLER_DIR . 'user_request_handler.php';
+    });
+
+    app\path_macro(['/auth/.*'], function() {
+        require CONTROLLER_DIR . 'auth_request_handler.php';
     });
 
 ?>
