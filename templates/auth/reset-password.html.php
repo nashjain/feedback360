@@ -17,7 +17,8 @@
                 </div>
 
                 <div class="row uniform 50%">
-                    <div class="12u$ 12u$(xsmall)"><input type="submit" value="Continue" class="fit special" /></div>
+                    <div class="6u 12u$(xsmall)"></div>
+                    <div class="6u$ 12u$(xsmall)"><input type="submit" value="Continue" class="fit special" /></div>
                 </div>
             </form>
             <?php include_once TEMPLATE_PATH. "inc/jquery_validator.php"; ?>

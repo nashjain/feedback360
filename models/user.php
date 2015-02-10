@@ -83,6 +83,7 @@ class User
             <br>Please check your inbox for the verification email, which was sent at the time of registration.
             <br>OR
             <br>Request for a <a href="/auth/resend-verification-email?email=' . $email . '">new verification email</a>.';
+        self::set_user_data_session($user_details);
         return 'Success';
     }
 
@@ -101,36 +102,36 @@ class User
     private static function set_user_data_session($user_details)
     {
         $username = $user_details['key'];
-        $limited_user_details = array(
+        $limited_user_details = [
             'name' => $user_details['name'],
             'email' => $user_details['email'],
             'username' => $username
-        );
-        $program_team_details = DB::query("SELECT conf_id, theme, role FROM program_team WHERE `username`=%s", $username);
-        if (!empty($program_team_details)) {
-            $limited_user_details[Session::ORG_DETAILS] = convert_to_associative_array($program_team_details, 'conf_id');
+        ];
+        $org_details = DB::query("SELECT org_id, team, role FROM org_structure WHERE `username`=%s", $username);
+        if (!empty($org_details)) {
+            $limited_user_details[Session::ORG_DETAILS] = convert_to_associative_array($org_details, 'org_id');
         }
         Session::add_user_details($limited_user_details);
     }
 
     private static function validate_details($user)
     {
-        $errors = array();
+        $errors = [];
         if (empty($user['name'])) {
             $errors['name'] = 'Please enter your name';
         }
         if (!filter_var($user['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Please enter a valid Email Address';
+            $errors['email'] = 'Please enter a valid email address.';
         }
         if (empty($user['password']) || strlen($user['password']) <= 6) {
-            $errors['password'] = 'Please enter a valid password with more than 6 characters';
+            $errors['password'] = 'Password should be more than 6 characters.';
         }
         if ($user['password'] != $user['confirmation-password']) {
-            $errors['confirmation-password'] = 'Confirmation password does not match';
+            $errors['confirmation-password'] = 'Confirmation password does not match.';
         }
         $records = self::fetch_user_details('email', $user['email']);
         if (!empty($records)) {
-            $errors['email'] = 'Please use another Email Address, current email is already used with another account';
+            $errors['email'] = 'Email already in use, please use another email address.';
         }
         return $errors;
     }

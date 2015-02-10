@@ -16,10 +16,14 @@
     function display_flash_msg() {
         $alert_msg = Session::get_alert();
         if(!empty($alert_msg)) {
-            $msg_block = "<div class='alert alert-" . $alert_msg['type'] . "'>
-            <div class='close' data-dismiss='alert'>&times;</div>
+            $msg_block = "<div id='session_alert_msg' class='alert alert-" . $alert_msg['type'] . "'>
             <span>" . $alert_msg['msg'] . "</span>
-        </div>";
+        </div>
+        <script type='text/javascript'>
+            setTimeout(function () {
+                    $('#session_alert_msg').remove();
+                }, 10000);
+        </script>";
             Session::remove_alert();
             return $msg_block;
         }

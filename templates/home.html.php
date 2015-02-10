@@ -123,7 +123,7 @@
             <h2>Sounds Interesting?</h2>
             <p>Want to get updates from our side?</p>
         </header>
-        <form method="post" action="/subscribe" class="container 50%">
+        <form method="post" action="/auth/subscribe" class="container 50%">
             <div class="row uniform 50%">
                 <div class="8u 12u$(xsmall)"><input type="email" name="email" id="email" placeholder="Your Email Address" /></div>
                 <div class="4u$ 12u$(xsmall)"><input type="submit" value="Subscribe" class="fit special" /></div>

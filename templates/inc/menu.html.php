@@ -3,25 +3,18 @@
     <nav id="nav">
         <ul>
             <li><a href="/">Home</a></li>
-            <li>
-                <a href="">Layouts</a>
-                <ul>
-                    <li><a href="left-sidebar.html">Left Sidebar</a></li>
-                    <li><a href="right-sidebar.html">Right Sidebar</a></li>
-                    <li><a href="no-sidebar.html">No Sidebar</a></li>
-                    <li>
-                        <a href="">Submenu</a>
-                        <ul>
-                            <li><a href="#">Option 1</a></li>
-                            <li><a href="#">Option 2</a></li>
-                            <li><a href="#">Option 3</a></li>
-                            <li><a href="#">Option 4</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li><a href="elements.html">Elements</a></li>
-            <li><a href="#" class="button special">Sign Up</a></li>
+            <?php if(Session::is_inactive()) {?>
+                <li><a href="/auth/login" class="button special">Login</a></li>
+            <?php } else { ?>
+                <li>
+                    <a href="/user/<?php echo Session::get_user_property('username')?>" class="button special"><?php echo Session::get_user_property('name')?> <i class="icon fa-caret-down"></i></a>
+                    <ul>
+                        <li><a href="/user/update-profile"><i class="icon fa-edit"></i> Update Profile</a></li>
+                        <li><a href='/user/change-password'><i class="icon fa-lock"></i> Change Password</a></li>
+                        <li><a href="/auth/logout"><i class="icon fa-power-off"></i> Logout</a></li>
+                    </ul>
+                </li>
+            <?php } ?>
         </ul>
     </nav>
 </header>

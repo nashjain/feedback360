@@ -6,7 +6,7 @@ use phpish\template;
 include_once MODELS_DIR . 'user.php';
 
 app\get("/auth/login", function ($req) {
-    $data = array();
+    $data = [];
     if (array_key_exists('requested_url', $req['query']))
         $data['requested_url'] = $req['query']['requested_url'];
     if (array_key_exists('msg', $req['query']))
@@ -19,7 +19,7 @@ app\post("/auth/login", function ($req) {
     if ('Success'== $response)
         return app\response_302($req['form']['requested_url']);
     set_flash_msg('error', $response);
-    $data = array();
+    $data = [];
     return template\compose("auth/signin.html", compact('data'), "layout-no-sidebar.html");
 });
 
@@ -31,14 +31,18 @@ app\get("/auth/logout", function ($req) {
 app\post("/auth/registration", function ($req) {
     $data = ['email'=> $req['form']['email']];
     $errors = User::register($req['form']);
-    $data['errors'] = $errors;
     if (empty($errors))
         return template\compose("auth/email-authentication.html", compact('data'), "layout-no-sidebar.html");
-    return template\compose("auth/signin.html", compact('data'), "layout-no-sidebar.html");
+    $error_msg = '';
+    foreach($errors as $input=>$error) {
+        $error_msg .= "<b>Error: $input</b>&nbsp;&nbsp;$error<br/>";
+    }
+    set_flash_msg('error', $error_msg);
+    return app\response_302('/auth/login');
 });
 
 app\get("/auth/email-confirmation", function ($req) {
-    $data = array();
+    $data = [];
     $data['message'] = User::verify_email_address($req['query']);
     return template\compose("auth/signin.html", compact('data'), "layout-no-sidebar.html");
 });
@@ -50,19 +54,19 @@ app\get("/auth/resend-verification-email", function ($req) {
 });
 
 app\get("/auth/forgot-password", function ($req) {
-    $data = array();
+    $data = [];
     return template\compose("auth/forgot-password.html", compact('data'), "layout-no-sidebar.html");
 });
 
 app\post("/auth/forgot-password", function ($req) {
-    $data = array();
+    $data = [];
     $results = User::process_forgot_password_request($req['form']['email']);
     set_flash_msg($results[0], $results[1]);
     return template\compose("auth/forgot-password.html", compact('data'), "layout-no-sidebar.html");
 });
 
 app\get("/auth/reset-password", function ($req) {
-    $data = array();
+    $data = [];
     $results = User::process_password_reset_request($req['query']);
     if (is_array($results) && 'error' == current($results)) {
         set_flash_msg('error', $results[1]);
@@ -78,6 +82,22 @@ app\post("/auth/reset-password", function ($req) {
     set_flash_msg($results[0], $results[1]);
     if ('error' != $results[0])
         return app\response_302('/auth/login');
-    $data = array('user_details'=>$form);
+    $data = ['user_details'=>$form];
     return template\compose("auth/reset-password.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\get("/auth/unsub/{email_id}", function($req) {
+    $email_id = $req['matches']['email_id'];
+    Email::unsub($email_id);
+    set_flash_msg('success', "Thank you! Your email: $email_id will no longer receive updates from us.");
+    return app\response_302("/");
+});
+
+app\post("/auth/subscribe", function($req) {
+    $email_id = $req['form']['email'];
+    if(!empty($email_id)){
+        Email::enroll($email_id);
+        set_flash_msg('success', "Thank you! We'll keep you posted via your email: $email_id.");
+    }
+    return app\response_302("/");
 });

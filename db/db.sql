@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `user_email`;
+DROP TABLE IF EXISTS `org_structure`;
 
 CREATE TABLE `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -29,3 +30,11 @@ CREATE TABLE `user_email` (
   `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY  (`email`)
 ) ENGINE= InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `org_structure` (
+  `org_id` varchar(100) NOT NULL,
+  `team` varchar(100) NOT NULL,
+  `role` varchar(50) NOT NULL DEFAULT 'member',
+  `username` varchar(255) NOT NULL,
+  PRIMARY KEY  (`username`, `org_id`, `team`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

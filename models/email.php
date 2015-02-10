@@ -2,11 +2,11 @@
 class Email {
     public static function add($input)
     {
-        $data = array();
+        $data = [];
         $lines=preg_split("/[\r\n]+/", $input, -1, PREG_SPLIT_NO_EMPTY);
         foreach($lines as $line) {
             $email_name = explode("\t", $line);
-            $data[] = array('email'=>$email_name[0], 'full_name'=>$email_name[1]);
+            $data[] = ['email'=>$email_name[0], 'full_name'=>$email_name[1]];
         }
         DB::insertIgnore('user_email', $data);
         $inserted = DB::affectedRows();
@@ -15,9 +15,7 @@ class Email {
 
     public static function subscribe($user_info)
     {
-        $email = $user_info['email'];
-        if(!preg_match("/^\d+@twitter.com/i", $email))
-            DB::insertIgnore('user_email', array('email'=> $email, 'full_name'=>$user_info['name']));
+        DB::insertIgnore('user_email', ['email'=> $user_info['email'], 'full_name'=>$user_info['name']]);
     }
 
     public static function send_bulk_email($form)
@@ -31,16 +29,29 @@ class Email {
 
     public static function unsub($email_id)
     {
-        $existing_email = DB::queryFirstField("select email from user_email where email=%s", $email_id);
-        if(empty($existing_email))
-            DB::insert('user_email', array('email'=> $email_id, 'full_name'=>"Unsub User", 'status'=>'unsub'));
+        if(self::user_does_not_exists($email_id))
+            DB::insert('user_email', ['email'=> $email_id, 'full_name'=>"Unsub User", 'status'=>'unsub']);
         else
-            DB::update("user_email", array("status"=>'unsub'), "email=%s", $email_id);
+            DB::update("user_email", ["status"=>'unsub'], "email=%s", $email_id);
     }
 
     public static function is_not_active($email)
     {
         $status = DB::queryFirstField("select status from user_email where email=%s and status='active'", $email);
         return empty($status);
+    }
+
+    public static function enroll($email_id)
+    {
+        if(self::user_does_not_exists($email_id))
+            DB::insert('user_email', ['email'=> $email_id, 'full_name'=>"Subscribed User", 'status'=>'active']);
+        else
+            DB::update("user_email", ["status"=>'active', 'full_name'=>"Subscribed User"], "email=%s", $email_id);
+    }
+
+    private static function user_does_not_exists($email_id)
+    {
+        $existing_email = DB::queryFirstField("select email from user_email where email=%s", $email_id);
+        return empty($existing_email);
     }
 }
