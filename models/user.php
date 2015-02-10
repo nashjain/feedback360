@@ -175,7 +175,7 @@ class User
 
     static function display_profile($user_key)
     {
-        return self::fetch_user_details('key', $user_key, "user_id, name, `key`, email, sign_up_date, bio, title, organization, active, sign_up_date");
+        return self::fetch_user_details('key', $user_key, "user.id, name, user.key, email, sign_up_date, bio, title, organization, active, sign_up_date");
     }
 
     private static function update_user_details($email, $params)
@@ -286,7 +286,7 @@ class User
     {
         $data = array('show_meter' => 'Profile');
         $data['profile'] = self::display_profile($username);
-        $data['user_id'] = $data['profile']['user_id'];
+        $data['id'] = $data['profile']['id'];
         $data['email'] = $data['profile']['email'];
         $data['topic'] = 'Update your Profile';
         return $data;
@@ -294,7 +294,7 @@ class User
 
     public static function fetch_logged_in_users_info()
     {
-        return DB::queryFirstRow("SELECT user.user_id, user.email, user.sign_up_date, user.active FROM user WHERE `key`=%s", Session::get_user_property('username'));
+        return DB::queryFirstRow("SELECT user.id, user.email, user.sign_up_date, user.active FROM user WHERE `key`=%s", Session::get_user_property('username'));
     }
 
     public static function logout()

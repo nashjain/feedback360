@@ -77,7 +77,7 @@ app\post("/auth/reset-password", function ($req) {
     $results = User::reset_password($form);
     set_flash_msg($results[0], $results[1]);
     if ('error' != $results[0])
-        return app\response_302('/login');
+        return app\response_302('/auth/login');
     $data = array('user_details'=>$form);
     return template\compose("auth/reset-password.html", compact('data'), "layout-no-sidebar.html");
 });
