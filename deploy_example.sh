@@ -1,2 +1,2 @@
 #!/bin/bash
-rsync -zrpt --delete --progress --force --delete-excluded --exclude=deploy.sh --exclude=.gitignore --exclude=.DS_Store --exclude=.git --exclude=.idea ~/Sites/phpish-skeleton/ username@your.hosting-site.com:/home/username/webapps/site_name/
+rsync -zrpt --delete --progress --force --delete-excluded --exclude=deploy.sh --exclude=deploy_example.sh --exclude=development_example.conf.php --exclude=production_example.conf.php --exclude=.gitignore --exclude=.DS_Store --exclude=.git --exclude=.idea ~/Sites/feedback360/ naresh@naresh.webfactional.com:/home/username/site_name/
