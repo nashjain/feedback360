@@ -16,11 +16,9 @@ app\get("/auth/login", function ($req) {
 
 app\post("/auth/login", function ($req) {
     $response = User::authenticate_user($req['form']);
-    if ('Success'== $response)
-        return app\response_302($req['form']['requested_url']);
-    set_flash_msg('error', $response);
-    $data = [];
-    return template\compose("auth/signin.html", compact('data'), "layout-no-sidebar.html");
+    if ('Success'!= $response)
+        set_flash_msg('error', $response);
+    return app\response_302($req['form']['requested_url']);
 });
 
 app\get("/auth/logout", function ($req) {
