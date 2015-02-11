@@ -11,7 +11,8 @@ class Survey
 
         if (!empty($errors)) return ['status'=>'error', 'value'=>$errors];
 
-        DB::insert('survey', ['name'=>$form['name'], 'org_id'=>$form['org_id'], 'team_id'=>$form['team_id'], 'username'=>Session::get_user_property('username')]);
+        $now = date('Y-m-d H:i:s');
+        DB::insert('survey', ['name'=>$form['name'], 'org_id'=>$form['org_id'], 'team_id'=>$form['team_id'], 'username'=>Session::get_user_property('username'), 'created'=>$now]);
         $survey_id = DB::insertId();
 
         $competency_mapping = [];

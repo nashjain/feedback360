@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `competencies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
-  `created` datetime NOT NULL DEFAULT NOW(),
+  `created` datetime NOT NULL DEFAULT '2015-01-01 00:00:00',
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `survey` (
   `org_id` varchar(100) NOT NULL,
   `team_id` varchar(100) NOT NULL,
   `username` varchar(255) NOT NULL,
-  `created` datetime NOT NULL DEFAULT NOW(),
+  `created` datetime NOT NULL DEFAULT '2015-01-01 00:00:00',
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7;
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `survey_competencies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `survey_id` int(11) NOT NULL,
   `competency_id` int(11) NOT NULL,
-  `created` datetime NOT NULL DEFAULT NOW(),
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `survey_competency_id` (`survey_id`, `competency_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7;
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `reviewers` (
   `survey_id` int(11) NOT NULL,
   `reviewer` varchar(255) NOT NULL,
   `reviewee` varchar(255) NOT NULL,
-  `created` datetime NOT NULL DEFAULT NOW(),
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `single_reviewer` (`survey_id`, `reviewer`, `reviewee`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7;
