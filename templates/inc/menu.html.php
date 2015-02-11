@@ -3,6 +3,7 @@
     <nav id="nav">
         <ul>
             <li><a href="/">Home</a></li>
+            <li><a href="/survey/create">Create</a></li>
             <?php if(Session::is_inactive()) {?>
                 <li><a href="/auth/login" class="button special">Login</a></li>
             <?php } else { ?>

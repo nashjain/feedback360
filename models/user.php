@@ -1,8 +1,9 @@
 <?php
 
-include_once MODELS_DIR . 'session.php';
+include_once MODELS_DIR . 'util.php';
 include_once MODELS_DIR . 'email.php';
 include_once MODELS_DIR . 'mailer.php';
+include_once MODELS_DIR . 'survey.php';
 
 class User
 {
@@ -16,30 +17,45 @@ class User
         return $form_errors;
     }
 
-    private static function create_user($user_details)
+    private static function create_user($user_details, $lost_password_request=0)
     {
         $sign_up_date = date('Y-m-d H:i:s');
         $activation_token = md5((string)$sign_up_date);
         $password_hash = self::create_hash($user_details['password'], (string)$sign_up_date);
         $user_key = self::get_user_key($user_details['name']);
-        $user_record = array(
+        $user_record = [
             'name' => $user_details['name'],
             'key' => $user_key,
             'password' => $password_hash,
             'email' => $user_details['email'],
             'activation_token' => $activation_token,
             'last_activation_request' => strtotime("now"),
-            'lost_password_request' => 0,
+            'lost_password_request' => $lost_password_request,
             'active' => 0,
             'sign_up_date' => $sign_up_date,
-        );
+        ];
         DB::insert('user', $user_record);
         return $user_record;
     }
 
+    public static function create_only_if_new($team_members){
+        $exiting_user = DB::queryFirstColumn("select user.key from user where user.key in %ls", array_keys($team_members));
+
+        $new_members =array_diff_key($team_members,array_flip($exiting_user));
+
+        $new_ids = [];
+        foreach($new_members as $email=>$name) {
+            $user_details = self::create_user(['name'=>$name, 'email'=>$email, 'password'=>substr(str_shuffle(MD5(microtime())), 0, 9)], 1);
+            send_mail($user_details, 'registration');
+            $new_ids[] = $user_details['key'];
+        }
+
+        return array_merge($exiting_user, $new_ids);
+    }
+
     private static function get_user_key($name)
     {
-        $name_key = self::add_hyphens($name);
+        $name_key = Util::add_hyphens($name);
         $results = DB::queryFirstColumn("SELECT user.key FROM user WHERE `key` LIKE %ss", $name_key);
         if (empty($results)) return $name_key;
         sort($results);
@@ -52,24 +68,22 @@ class User
         return md5($string);
     }
 
-    private static function add_hyphens($word) {
-        $word = preg_replace('/[^a-zA-Z0-9\s_&\\-]+/', '', $word);
-        return strtolower(preg_replace('/[\s\W]+/','-',$word));
-    }
-
     static function verify_email_address($info)
     {
-        $user_details = self::fetch_user_details('email', $info['email'], "activation_token,active,email,name");
+        $user_details = self::fetch_user_details('email', $info['email'], "activation_token,active,email,name,lost_password_request");
         if(!empty($user_details)){
             Email::subscribe($user_details);
             if ($user_details['active'] == 1) {
-                return array('state' => 'info', 'text' => 'Account already active. Please login using your credentials.');
+                return ['state' => 'info', 'text' => 'Account already active. Please login using your credentials.'];
             } else if ($user_details['activation_token'] == $info['activation_token']) {
-                self::update_user_details($info['email'], array('active' => 1));
-                return array('state' => 'success', 'text' => 'Account has been activated. Please login using your credentials');
+                self::update_user_details($info['email'], ['active' => 1]);
+                if($user_details['lost_password_request']== 0)
+                    return ['state' => 'success', 'text' => 'Account has been activated. Please login using your credentials'];
+                else
+                    return ['state' => 'reset_pwd', 'text' => 'Account has been activated. Please set your password'];
             }
         }
-        return array('state' => 'error', 'text' => 'Wrong link used for Account Activation. Please contact support for help.');
+        return ['state' => 'error', 'text' => 'Wrong link used for Account Activation. Please contact support for help.'];
     }
 
     static function authenticate_user($credentials)
@@ -90,13 +104,13 @@ class User
     public static function resend_verification_email($req_param)
     {
         if (!array_key_exists('email', $req_param) || empty($req_param['email']))
-            return array('error', 'Email address missing from the request.');
+            return ['error', 'Email address missing from the request.'];
         $email = $req_param['email'];
         $user_details = self::fetch_user_details('email', $email, "name,email,activation_token");
         if (empty($user_details))
-            return array('error', 'Email address "' . $email . '" does not belong to any registered user.');
+            return ['error', 'Email address "' . $email . '" does not belong to any registered user.'];
         send_mail($user_details, 'email_verification');
-        return array('success', 'New verification email sent to ' . $email . '. Please check your inbox.');
+        return ['success', 'New verification email sent to ' . $email . '. Please check your inbox.'];
     }
 
     private static function set_user_data_session($user_details)
@@ -107,9 +121,9 @@ class User
             'email' => $user_details['email'],
             'username' => $username
         ];
-        $org_details = DB::query("SELECT org_id, team, role FROM org_structure WHERE `username`=%s", $username);
+        $org_details = DB::query("SELECT org_id, team_id, role FROM org_structure WHERE `username`=%s", $username);
         if (!empty($org_details)) {
-            $limited_user_details[Session::ORG_DETAILS] = convert_to_associative_array($org_details, 'org_id');
+            $limited_user_details[Session::ORG_DETAILS] = Util::convert_to_associative_array($org_details, Session::ORG_ID);
         }
         Session::add_user_details($limited_user_details);
     }
@@ -141,10 +155,10 @@ class User
         $user_details = self::fetch_user_details('email', $email);
         if ($user_details) {
             send_mail($user_details, 'password-recovery');
-            self::update_user_details($user_details['email'], array('lost_password_request' => 1));
-            return array('success', "<h4>Password Recovery Mail sent to " . $user_details['email'] . "</h4><span>Please check your mail account, and click on the password recovery link to reset your password.</span>");
+            self::update_user_details($user_details['email'], ['lost_password_request' => 1]);
+            return ['success', "<h4>Password Recovery Mail sent to " . $user_details['email'] . "</h4><span>Please check your mail account, and click on the password recovery link to reset your password.</span>"];
         }
-        return array('error', '<h4>Email Address Not found!</h4><span>Please check the email address entered and try again.</span>');
+        return ['error', '<h4>Email Address Not found!</h4><span>Please check the email address entered and try again.</span>'];
     }
 
     static function process_password_reset_request($query_details)
@@ -154,7 +168,7 @@ class User
             if ($user_details['activation_token'] == $query_details['activation_token'])
                 return $user_details;
         }
-        return array('error', '<h4>Invalid Password Recovery Link</h4><span>The password recovery link is broken. Please try to reset the password again.</span>');
+        return ['error', '<h4>Invalid Password Recovery Link</h4><span>The password recovery link is broken. Please try to reset the password again.</span>'];
     }
 
     static function reset_password($form)
@@ -162,14 +176,14 @@ class User
         $user_details = self::process_password_reset_request($form);
         if (is_array($user_details) && 'error' == current($user_details)) return $user_details;
         $errors = self::validate_reset_password($form);
-        if (!empty($errors)) return array('error', $errors);
+        if (!empty($errors)) return ['error', $errors];
         $password_hash = self::create_hash($form['password'], $user_details['sign_up_date']);
-        self::update_user_details($form['email'], array('password' => $password_hash, 'lost_password_request' => 0));
+        self::update_user_details($form['email'], ['password' => $password_hash, 'lost_password_request' => 0]);
         Session::destroy();
-        return array('success', 'Password Reset Successful! Please login using your new credentials.');
+        return ['success', 'Password Reset Successful! Please login using your new credentials.'];
     }
 
-    private static function fetch_user_details($query_param, $email, $required_params = "email,name,activation_token,sign_up_date")
+    static function fetch_user_details($query_param, $email, $required_params = "email,name,activation_token,sign_up_date")
     {
         return DB::queryFirstRow("SELECT %l FROM user WHERE `" . $query_param . "`=%s LIMIT 1", $required_params, $email);
     }
@@ -186,10 +200,10 @@ class User
 
     private static function validate_reset_password($form)
     {
-        return self::validations_for($form['password'], array(
-            'min_length' => array('length' => 6),
-            'compare' => array('value' => $form['confirmation-password'])
-        ));
+        return self::validations_for($form['password'], [
+            'min_length' => ['length' => 6],
+            'compare' => ['value' => $form['confirmation-password']]
+        ]);
     }
 
     private static function validations_for($value, $required_validations)
@@ -232,22 +246,22 @@ class User
                 return "Email Address already associated with another account.";
             }
         }
-        $profile_values = array(
+        $profile_values = [
             'name' => $form['inputName'],
             'email' => $form['inputEmail'],
             'title' => $form['inputTitle'],
             'organization' => $form['inputOrganization'],
             'bio' => $form['inputBio'],
-        );
+        ];
         if ($updated_email_address) {
             $activation_token = md5($form['sign_up_date']);
             $profile_values['activation_token'] = $activation_token;
             $profile_values['active'] = 0;
-            $email_values = array(
+            $email_values = [
                 'name' => Session::get_user_property('name'),
                 'activation_token' => $activation_token,
                 'email' => $form['inputEmail']
-            );
+            ];
         }
         DB::update('user', $profile_values, "`key`=%s", $username);
         if ($updated_email_address and !(empty($email_values))) {
@@ -260,20 +274,8 @@ class User
 
     private static function validate_form($form)
     {
-        $required_fields = array('inputName' => 'Name', 'inputTitle' => 'Title', 'inputOrganization' => 'Organization', 'inputBio' => 'Bio', 'inputEmail' => 'Email Address');
-        return self::validate_form_contains_required_fields($form, $required_fields);
-    }
-
-    private static function validate_form_contains_required_fields($form, $required_fields)
-    {
-        $errors = '';
-        foreach ($required_fields as $required_field => $field_name) {
-            $actual_value = trim($form[$required_field]);
-            if (empty($actual_value)) {
-                $errors .= $field_name . " cannot be null.<br>";
-            }
-        }
-        return $errors;
+        $required_fields = ['inputName' => 'Name', 'inputTitle' => 'Title', 'inputOrganization' => 'Organization', 'inputBio' => 'Bio', 'inputEmail' => 'Email Address'];
+        return Util::validate_form_contains_required_fields($form, $required_fields);
     }
 
     public static function fetch_profile_data($username)
@@ -291,10 +293,6 @@ class User
         Session::destroy();
     }
 
-    private static function can_update($username) {
-        return $username == Session::get_user_property('username') || Session::is_admin();
-    }
-
     public static function is_authorized_to_view_dashboard($org_id)
     {
         return Session::is_manager($org_id);
@@ -305,6 +303,11 @@ class User
         return Session::is_member($org_id);
     }
 
+    public static function is_authorized_to_assign_reviewers($survey_id)
+    {
+        return Session::get_user_property('username')==Survey::owner($survey_id);
+    }
+
     public static function fetch_email_and_activation_token()
     {
         return DB::queryFirstRow("select email, activation_token from user where `key`=%s", Session::get_user_property('username'));
@@ -313,5 +316,19 @@ class User
     public static function fetch_all_ids()
     {
         return DB::queryFirstColumn("SELECT `key` FROM user where active=1");
+    }
+
+    public static function all_employees_from($org_id, $team_id='')
+    {
+        $team_clause = '';
+        if(!empty($team_id))
+            $team_clause = " and team_id='".$team_id."'";
+        $all = DB::query("select user.key, user.name from org_structure INNER JOIN user on user.key=org_structure.username where org_id=%s $team_clause", $org_id);
+        return Util::convert_to_associative_map($all, 'key', 'name');
+    }
+
+    public static function bulk_user_info($users)
+    {
+        return DB::query("select name, email from user where `key` in %ls", $users);
     }
 }

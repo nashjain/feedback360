@@ -9,18 +9,14 @@
             <input name="activation_token" type="hidden" value="<?php echo $data['activation_token'];?>">
 
             <div class="row uniform 50%">
-                <div class="6u 12u$(xsmall)"><label class="control-label" for="new_password">New Password<sup>*</sup></label></div>
-                <div class="6u$ 12u$(xsmall)"><input type="password" name="password" id="password" placeholder="New Password" required minlength="6" autocomplete="off"></div>
-            </div>
+                <div class="6u 12u$(medium) form-label"><label for="new_password">New Password<sup>*</sup></label></div>
+                <div class="6u$ 12u$(medium)"><input type="password" name="password" id="password" placeholder="New Password" required minlength="6" autocomplete="off"></div>
 
-            <div class="row uniform 50%">
-                <div class="6u 12u$(xsmall)"><label class="control-label" for="confirmation-password">Confirm Password<sup>*</sup></label></div>
-                <div class="6u$ 12u$(xsmall)"><input type="password" name="confirmation-password" id="confirmation-password" placeholder="Confirm Password" required minlength="6"></div>
-            </div>
+                <div class="6u 12u$(medium) form-label"><label for="confirmation-password">Confirm Password<sup>*</sup></label></div>
+                <div class="6u$ 12u$(medium)"><input type="password" name="confirmation-password" id="confirmation-password" placeholder="Confirm Password" required minlength="6"></div>
 
-            <div class="row uniform 50%">
-                <div class="6u 12u$(xsmall)"></div>
-                <div class="6u$ 12u$(xsmall)"><input type="submit" value="Update" class="fit special" /></div>
+                <div class="6u 12u$(medium)"></div>
+                <div class="6u$ 12u$(medium)"><input type="submit" value="Update" class="fit special" /></div>
             </div>
         </form>
         <?php //include_once TEMPLATE_PATH. "inc/jquery_validator.php"; ?>

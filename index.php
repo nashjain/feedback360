@@ -7,7 +7,7 @@
     require __DIR__.'/path.config.php';
 	require __DIR__.'/conf/'.app\ENV.'.conf.php';
 
-    include_once __DIR__ . "/models/session.php";
+    include_once MODELS_DIR . "session.php";
 
     function set_flash_msg($type, $msg) {
         Session::set_alert(array('msg'=>$msg, 'type'=>$type));
@@ -66,6 +66,18 @@
 
     app\path_macro(['/user/.*'], function() {
         require CONTROLLER_DIR . 'user_request_handler.php';
+    });
+
+    app\path_macro(['/survey[/.*]'], function() {
+        require CONTROLLER_DIR . 'survey_request_handler.php';
+    });
+
+    app\path_macro(['/org[/.*]'], function() {
+        require CONTROLLER_DIR . 'org_request_handler.php';
+    });
+
+    app\path_macro(['/team[/.*]'], function() {
+        require CONTROLLER_DIR . 'team_request_handler.php';
     });
 
     app\path_macro(['/auth/.*'], function() {

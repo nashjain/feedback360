@@ -110,7 +110,7 @@
         </div>
         <footer class="major">
             <ul class="actions">
-                <li><a href="/create" class="button">Give it a Spin</a></li>
+                <li><a href="/survey/create" class="button">Give it a Spin</a></li>
             </ul>
         </footer>
     </div>

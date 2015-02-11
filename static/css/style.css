@@ -1709,3 +1709,13 @@
     color: #a9a9a9;
     line-height: 0.86em;
 }
+
+.form-label {
+    text-align: right;
+    font-size: 1.2em;
+}
+
+.checkbox-label {
+    text-align: left;
+    margin-right: 10px;
+}

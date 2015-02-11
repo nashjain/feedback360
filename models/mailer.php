@@ -27,6 +27,10 @@ function send_mail($details, $objective, $conf_details=['email_address'=>'naresh
             $subject = 'Feedback360 Registration';
             $message_body = build_registration_message($details);
             break;
+        case 'new_review':
+            $subject = '[Feedback360] New Review is assigned to You';
+            $message_body = build_new_review_message();
+            break;
         case 'email_verification':
             $subject = 'Feedback360 Email Verification';
             $message_body = build_registration_message($details, true);
@@ -83,7 +87,16 @@ function build_registration_message($user_details, $email_activation_only = fals
         <br />
         Feedback360 is a platform for you to receive and give 360&deg; feedback to your colleagues. <br />
         <br />
-        To get started, click on this link to activate your account and start using Feedback360: <a href="' . $activation_url . '"> ' . $activation_url . ' </a>';
+        To get started, click on this link to activate your account and start using Feedback360: <a href="' . $activation_url . '"> ' . $activation_url . ' </a><br />
+        <br />
+        You have got this email either because you signed up for this service or you were enrolled by your manager. Please do the needful.';
+}
+
+function build_new_review_message()
+{
+    $review_url = "http://" . $_SERVER['HTTP_HOST'] . "/reviews";
+    return 'A new review has been assigned to you in <b>Feedback360 System</b>. <br /><br />
+        To get started, please click on this link: <a href="' . $review_url . '"> ' . $review_url . ' </a>';
 }
 
 function build_password_recovery_message($user_details, $action)

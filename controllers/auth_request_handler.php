@@ -40,9 +40,14 @@ app\post("/auth/registration", function ($req) {
 });
 
 app\get("/auth/email-confirmation", function ($req) {
-    $data = [];
-    $data['message'] = User::verify_email_address($req['query']);
-    return template\compose("auth/signin.html", compact('data'), "layout-no-sidebar.html");
+    $query = $req['query'];
+    $message = User::verify_email_address($query);
+    set_flash_msg($message['state'], $message['text']);
+    if($message['state']=='reset_pwd') {
+        $data = ['user_details'=>User::fetch_user_details('email', $query['email'])];
+        return template\compose("auth/reset-password.html", compact('data'), "layout-no-sidebar.html");
+    }
+    return app\response_302('/auth/login');
 });
 
 app\get("/auth/resend-verification-email", function ($req) {
