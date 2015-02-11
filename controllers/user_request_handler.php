@@ -25,14 +25,19 @@ app\get("/user/update-profile[/{username}]", function($req) {
     if(empty($username) or !Session::is_admin())
         $username = Session::get_user_property('username');
     $data = User::fetch_profile_data($username);
+    if($data['active']==0)
+        set_flash_msg('error', 'Your account is not active, please check your email for account activation email.');
     return template\compose("user/update-profile.html", compact('data'), "layout-left-sidebar.html");
 });
 
 app\post("/user/update-profile", function($req) {
-    $response = User::create_profile($req['form']);
     $username = $req['form']['username'];
-    if(empty($username) or !Session::is_admin())
+    $admin_in_action = true;
+    if(!Session::is_admin()) {
         $username = Session::get_user_property('username');
+        $admin_in_action = false;
+    }
+    $response = User::update_profile($username, $req['form'], $admin_in_action);
     if($response=='Success') {
         set_flash_msg('success', 'Successfully updated your profile.');
         return app\response_302('/user/'.$username);
@@ -41,9 +46,10 @@ app\post("/user/update-profile", function($req) {
         return app\response_302('/');
     }
     set_flash_msg('error', $response);
-    $data = User::fetch_profile_data($username);
-    $data['submitted_form'] = $req['form'];
-    return template\compose("user/update-profile.html", compact('data'), "layout-left-sidebar.html");
+    $url = '/user/update-profile';
+    if($admin_in_action)
+        $url .= "/$username";
+    return app\response_302($url);
 });
 
 app\get("/user/{username}", function($req) {

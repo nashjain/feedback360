@@ -219,35 +219,28 @@ class User
         return !empty($bio) && strlen($bio) > 1;
     }
 
-    public static function create_profile($form)
+    public static function update_profile($username, $form, $admin_in_action)
     {
         $errors = self::validate_form($form);
         if (!empty($errors)) return $errors;
         $updated_email_address = $form['inputEmail'] != Session::get_user_property('email');
-        $username = Session::get_user_property('username');
-        if(!empty($form['username']) and Session::is_admin()) {
-            $username = $form['username'];
+        if($admin_in_action)
             $updated_email_address = false;
-        }
         if ($updated_email_address) {
             $user_details = self::fetch_user_details('email', $form['inputEmail'], "active");
             if (!empty($user_details)) {
                 return "Email Address already associated with another account.";
             }
         }
-        $profile_values = array('title' => $form['inputTitle'],
-            'organization' => $form['inputOrganization'],
-            'country' => $form['inputCountry'],
-            'phone' => $form['inputPhone'],
-            'bio' => $form['inputBio'],
-            'agile_experience' => $form['inputAgileExperience'],
+        $profile_values = array(
+            'name' => $form['inputName'],
             'email' => $form['inputEmail'],
-            'twitter' => $form['inputTwitter'],
-            'website' => $form['inputWebsite'],
-            'profile_link' => $form['inputProfileLink']
+            'title' => $form['inputTitle'],
+            'organization' => $form['inputOrganization'],
+            'bio' => $form['inputBio'],
         );
         if ($updated_email_address) {
-            $activation_token = md5($form['inputSignUpDate']);
+            $activation_token = md5($form['sign_up_date']);
             $profile_values['activation_token'] = $activation_token;
             $profile_values['active'] = 0;
             $email_values = array(
@@ -267,7 +260,7 @@ class User
 
     private static function validate_form($form)
     {
-        $required_fields = array('inputTitle' => 'Title', 'inputOrganization' => 'Organization', 'inputBio' => 'Bio', 'inputEmail' => 'Email Address');
+        $required_fields = array('inputName' => 'Name', 'inputTitle' => 'Title', 'inputOrganization' => 'Organization', 'inputBio' => 'Bio', 'inputEmail' => 'Email Address');
         return self::validate_form_contains_required_fields($form, $required_fields);
     }
 
@@ -285,12 +278,7 @@ class User
 
     public static function fetch_profile_data($username)
     {
-        $data = array('show_meter' => 'Profile');
-        $data['profile'] = self::display_profile($username);
-        $data['id'] = $data['profile']['id'];
-        $data['email'] = $data['profile']['email'];
-        $data['topic'] = 'Update your Profile';
-        return $data;
+        return self::display_profile($username);
     }
 
     public static function fetch_logged_in_users_info()

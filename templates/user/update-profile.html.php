@@ -1,50 +1,51 @@
 <?php
-include_once TEMPLATE_PATH. "inc/html_helper.php";
 
-$profile = $data['profile'];
+$inputEmailVal = $data['email'];
+$inputNameVal = $data['name'];
+$inputTitleVal = $data['title'];
+$inputOrganizationVal = $data['organization'];
+$inputBioVal = $data['bio'];
 
-$post_action = "/user/update-profile";
-$button_name = "Update Profile";
-$cancel_url = "/user/" . $profile['key'];
-
-if (array_key_exists('submitted_form', $data)) {
-    $submitted_form = $data['submitted_form'];
-    $user_id = $submitted_form['user_id'];
-    $conf_id = $submitted_form['conf_id'];
-    $username = $submitted_form['username'];
-    $inputActive = $submitted_form['inputActive'];
-    $inputSignUpDate = $submitted_form['inputSignUpDate'];
-    $inputEmailVal = $submitted_form['inputEmail'];
-    $inputTitleVal = $submitted_form['inputTitle'];
-    $inputOrganizationVal = $submitted_form['inputOrganization'];
-    $inputPhoneVal = $submitted_form['inputPhone'];
-    $inputBioVal = $submitted_form['inputBio'];
-    $inputAgileExperienceVal = $submitted_form['inputAgileExperience'];
-    $inputTwitterVal = $submitted_form['inputTwitter'];
-    $inputWebsiteVal = $submitted_form['inputWebsite'];
-    $inputProfileLinkVal = $submitted_form['inputProfileLink'];
-    $selectedCountry = $submitted_form['inputCountry'];
-} else {
-    $user_id = $data['user_id'];
-    $conf_id = 'agile-india-2014';
-    $username = $profile['key'];
-    $inputActive = $profile['active'];
-    $inputSignUpDate = $profile['sign_up_date'];
-    $inputEmailVal = $profile['email'];
-    $inputTitleVal = $profile['title'];
-    $inputOrganizationVal = $profile['organization'];
-    $inputPhoneVal = $profile['phone'];
-    $inputBioVal = $profile['bio'];
-    $inputAgileExperienceVal = $profile['agile_experience'];
-    $inputTwitterVal = $profile['twitter'];
-    $inputWebsiteVal = $profile['website'];
-    $inputProfileLinkVal = $profile['profile_link'];
-    $selectedCountry = $profile['country'];
-}
-$email = $data['email'];
-$inputCountryVal = build_options_from($data['countries'], $selectedCountry);
-
-include_once __DIR__ . "/inc/profile_form.html.php";
 ?>
 
+<section class="wrapper style special fade">
+    <div class="container 50%">
+        <form action="/user/update-profile" id="theForm" method="post">
+            <h2>Update Profile</h2>
+            <input name="username" type="hidden" value="<?php echo $data['key'];?>">
+            <input name="email" type="hidden" value="<?php echo $inputEmailVal;?>">
+            <input name="sign_up_date" type="hidden" value="<?php echo $data['sign_up_date'];?>">
 
+            <div class="row uniform 50%">
+                <div class="4u 12u$(xsmall)"><label class="control-label" for="inputName">Name<sup>*</sup></label></div>
+                <div class="8u$ 12u$(xsmall)"><input type="text" name="inputName" id="inputName" placeholder="Your Name" value="<?php echo htmlentities($inputNameVal); ?>" minlength="3" required></div>
+            </div>
+
+            <div class="row uniform 50%">
+                <div class="4u 12u$(xsmall)"><label class="control-label" for="inputEmail">Email<sup>*</sup></label></div>
+                <div class="8u$ 12u$(xsmall)"><input type="email" name="inputEmail" id="inputEmail" placeholder="Your Email" value="<?php echo htmlentities($inputEmailVal); ?>" required></div>
+            </div>
+
+            <div class="row uniform 50%">
+                <div class="4u 12u$(xsmall)"><label class="control-label" for="inputTitle">Title<sup>*</sup></label></div>
+                <div class="8u$ 12u$(xsmall)"><input type="text" name="inputTitle" id="inputTitle" placeholder="Your Job Title" value="<?php echo htmlentities($inputTitleVal); ?>" minlength="3" required></div>
+            </div>
+
+            <div class="row uniform 50%">
+                <div class="4u 12u$(xsmall)"><label class="control-label" for="inputOrganization">Organization<sup>*</sup></label></div>
+                <div class="8u$ 12u$(xsmall)"><input type="text" name="inputOrganization" id="inputOrganization" placeholder="Name of your Organization" value="<?php echo htmlentities($inputOrganizationVal); ?>" required></div>
+            </div>
+            
+            <div class="row uniform 50%">
+                <div class="4u 12u$(xsmall)"><label class="control-label" for="inputBio">Bio<sup>*</sup></label></div>
+                <div class="8u$ 12u$(xsmall)"><textarea name="inputBio" rows="10" id="inputBio" required><?php echo $inputBioVal; ?></textarea></div>
+            </div>
+
+            <div class="row uniform 50%">
+                <div class="4u 12u$(xsmall)"><a href="/user/<?php echo $data['key'];?>">Cancel</a> </div>
+                <div class="8u$ 12u$(xsmall)"><input type="submit" value="Update Profile" class="fit special" /></div>
+            </div>
+        </form>
+        <?php include_once TEMPLATE_PATH. "inc/jquery_validator.php"; ?>
+    </div>
+</section>
