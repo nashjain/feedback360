@@ -1719,3 +1719,11 @@
     text-align: left;
     margin-right: 10px;
 }
+
+form {
+    text-align: left;
+}
+
+form>h2 {
+    text-align: center;
+}
