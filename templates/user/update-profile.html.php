@@ -8,7 +8,7 @@ $inputBioVal = $data['bio'];
 
 ?>
 
-<section class="wrapper style special fade">
+<section class="style special fade">
     <div class="container 50%">
         <form action="/user/update-profile" id="theForm" method="post">
             <h2>Update Profile</h2>

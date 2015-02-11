@@ -3,14 +3,13 @@
 <?php include_once TEMPLATE_PATH."inc/menu.html.php"; ?>
 
     <!-- Main -->
-    <div id="main" class="wrapper style1">
+    <div id="main" class="style1">
         <div class="container">
             <header class="major">
                 <h2>Title</h2>
             </header>
             <div class="row 150%">
                 <div class="3u 12u$(medium)">
-
                     <!-- Sidebar -->
                     <section id="sidebar">
                         <section>
@@ -34,14 +33,13 @@
                             </footer>
                         </section>
                     </section>
-
                 </div>
+
                 <div class="9u$ 12u$(medium) important(medium)">
                     <!-- Content -->
                     <section id="content">
                         <?php echo display_flash_msg() . $content; ?>
                     </section>
-
                 </div>
             </div>
         </div>
