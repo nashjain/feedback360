@@ -32,7 +32,7 @@ $inputBioVal = $data['bio'];
                 <div class="4u 12u$(medium) form-label"><label for="inputBio">Bio<sup>*</sup></label></div>
                 <div class="8u$ 12u$(medium)"><textarea name="inputBio" rows="10" id="inputBio" required><?php echo $inputBioVal; ?></textarea></div>
 
-                <div class="4u 12u$(medium)"><a href="/user/<?php echo $data['key'];?>">Cancel</a> </div>
+                <div class="4u 12u$(medium)"><a href="/user/<?php echo $data['key'];?>" class="button">Cancel</a> </div>
                 <div class="8u$ 12u$(medium)"><input type="submit" value="Update Profile" class="fit special" /></div>
             </div>
         </form>

@@ -1,4 +1,4 @@
-<header id="header" class="skel-layers-fixed">
+<header id="header">
     <h1 id="logo"><a href="/">Feedback 360&deg;</a></h1>
     <nav id="nav">
         <ul>

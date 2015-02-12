@@ -24,7 +24,7 @@
                 </div>
                 <?php } ?>
 
-                <div class="3u 12u$(medium)"><a href="/">Cancel</a></div>
+                <div class="3u 12u$(medium)"><a href="/" class="button">Cancel</a></div>
                 <div class="3u 12u$(medium)"></div>
                 <div class="3u 12u$(medium)"><input type="submit" value="Assign" class="fit special" /></div>
                 <div class="3u$ 12u$(medium)"></div>

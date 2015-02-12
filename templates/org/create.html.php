@@ -25,7 +25,7 @@ SAMPLE (DELETE THIS AND ADD YOUR DETAILS)
                     </textarea>
                 </div>
 
-                <div class="3u 12u$(medium)"><a href="/">Cancel</a></div>
+                <div class="3u 12u$(medium)"><a href="/" class="button">Cancel</a></div>
                 <div class="3u 12u$(medium)"></div>
                 <div class="3u 12u$(medium)"><input type="submit" value="Create" class="fit special" /></div>
                 <div class="3u$ 12u$(medium)"></div>
