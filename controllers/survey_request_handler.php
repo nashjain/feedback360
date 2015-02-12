@@ -68,7 +68,7 @@ app\post("/survey/assign-reviewer", function ($req) {
         $data = ['survey_id'=>$survey_id, 'survey_name'=>$survey_name, 'org_id'=>$org_id, 'team_id'=>$team_id, 'employees'=>$employees, 'team_members'=>$team_members];
         return template\compose("survey/assign_reviewers.html", compact('data'), "layout-no-sidebar.html");
     }
-    return app\response_302('/survey'.$survey_id);
+    return app\response_302('/survey/'.$survey_id);
 });
 
 app\get("/survey/{id}", function ($req) {
