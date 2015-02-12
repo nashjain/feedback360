@@ -8,7 +8,12 @@ include_once MODELS_DIR . 'survey.php';
 include_once MODELS_DIR . 'reviewer.php';
 include_once MODELS_DIR . 'user.php';
 
-app\any("/survey[/.*]", function ($req) {
+app\get("/survey", function ($req) {
+    $data = Survey::fetch_my_surveys();
+    return template\compose("survey/dashboard.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\any("/survey/[.*]", function ($req) {
     if(Session::is_inactive()) {
         set_flash_msg('error', 'You need to login to perform this action.');
         return app\response_302('/auth/login?requested_url='.rawurlencode($_SERVER["REQUEST_URI"]));
@@ -63,11 +68,11 @@ app\post("/survey/assign-reviewer", function ($req) {
         $data = ['survey_id'=>$survey_id, 'survey_name'=>$survey_name, 'org_id'=>$org_id, 'team_id'=>$team_id, 'employees'=>$employees, 'team_members'=>$team_members];
         return template\compose("survey/assign_reviewers.html", compact('data'), "layout-no-sidebar.html");
     }
-    return app\response_302('/survey/'.$survey_id);
+    return app\response_302('/survey'.$survey_id);
 });
 
 app\get("/survey/{id}", function ($req) {
     $id = $req['matches']['id'];
     $data = Survey::details($id);
-    return template\compose("survey/dashboard.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("survey/details.html", compact('data'), "layout-no-sidebar.html");
 });
