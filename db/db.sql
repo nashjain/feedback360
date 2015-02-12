@@ -106,8 +106,9 @@ CREATE TABLE IF NOT EXISTS `reviews` (
   `survey_id` int(11) NOT NULL,
   `reviewer` varchar(255) NOT NULL,
   `reviewee` varchar(255) NOT NULL,
-   `status` VARCHAR(10) DEFAULT 'pending' NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` VARCHAR(10) DEFAULT 'pending' NOT NULL,
+  `created` datetime NOT NULL DEFAULT '2015-01-01 00:00:00',
+  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_reviewer` (`survey_id`, `reviewer`, `reviewee`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7;

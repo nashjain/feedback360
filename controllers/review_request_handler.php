@@ -22,3 +22,13 @@ app\get("/review/pending", function ($req) {
     $data = Review::pending();
     return template\compose("review/pending.html", compact('data'), "layout-no-sidebar.html");
 });
+
+app\get("/review/given", function ($req) {
+    $data = Review::given();
+    return template\compose("review/given.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\get("/review/received", function ($req) {
+    $data = Review::received();
+    return template\compose("review/received.html", compact('data'), "layout-no-sidebar.html");
+});

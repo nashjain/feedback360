@@ -12,9 +12,10 @@ class Review
         $assignment = array_diff_key($form,array_flip($surplus_fields));
         $mapping = [];
         $all_reviewers = [];
+        $now = date('Y-m-d H:i:s');
         foreach($assignment as $reviewee=>$reviewers){
             foreach($reviewers as $reviewer) {
-                $mapping[] = ['survey_id' => $survey_id, 'reviewee' => $reviewee, 'reviewer' => $reviewer];
+                $mapping[] = ['survey_id' => $survey_id, 'reviewee' => $reviewee, 'reviewer' => $reviewer, 'created'=>$now];
             }
             $all_reviewers = array_merge($all_reviewers, $reviewers);
         }
@@ -35,6 +36,21 @@ class Review
 
     public static function pending()
     {
-        return DB::query("select reviews.*, user.name as reviewee_name, survey.name as survey_name, org.name as org_name, team.name as team_name from reviews INNER JOIN user on user.`key`=reviewee INNER JOIN survey on survey.id=survey_id INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where reviewer=%s", Session::get_user_property('username'));
+        return self::review_details("pending", 'created');
+    }
+
+    public static function given()
+    {
+        return self::review_details("completed", 'updated');
+    }
+
+    public static function received()
+    {
+        return DB::query("select survey.*, org.name as org_name, team.name as team_name from survey INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where survey.id IN (select DISTINCT (survey_id) from reviews where reviews.reviewee=%s and status='completed') order by survey.created desc", Session::get_user_property('username'));
+    }
+
+    private static function review_details($status, $sort_column)
+    {
+        return DB::query("select reviews.*, user.name as reviewee_name, survey.name as survey_name, org.name as org_name, team.name as team_name from reviews INNER JOIN user on user.`key`=reviewee INNER JOIN survey on survey.id=survey_id INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where status='" . $status . "' and reviewer=%s order by reviews.".$sort_column." desc", Session::get_user_property('username'));
     }
 }

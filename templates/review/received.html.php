@@ -1,8 +1,8 @@
 <section class="wrapper style special fade">
     <div class="container">
-        <h2>My Surveys</h2>
+        <h2>Received Feedback</h2>
         <?php if(empty($data)) {?>
-            <h4>Looks like you've not created any surveys so far. <a href="/survey/create">Get started...</a></h4>
+            <h4>Sorry! Currently, you have not received any reviews.</h4>
         <?php } else { ?>
             <div class="table-wrapper">
                 <table class="alt">
@@ -17,7 +17,7 @@
                     <tbody>
                     <?php foreach($data as $survey) { ?>
                         <tr>
-                            <td><a href="/survey/<?php echo $survey['id'] ?>"><?php echo $survey['name'] ?></a></td>
+                            <td><a href="/review/<?php echo $survey['id'] ?>/feedback"><?php echo $survey['name'] ?></a></td>
                             <td><?php echo $survey['org_name'] ?></td>
                             <td><?php echo $survey['team_name'] ?></td>
                             <td><?php echo date( 'jS F Y', strtotime($survey['created'])) ?></td>
