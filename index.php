@@ -64,6 +64,10 @@
         require CONTROLLER_DIR . 'app_request_handler.php';
     });
 
+    app\path_macro(['/review[/.*]'], function() {
+        require CONTROLLER_DIR . 'review_request_handler.php';
+    });
+
     app\path_macro(['/user/.*'], function() {
         require CONTROLLER_DIR . 'user_request_handler.php';
     });

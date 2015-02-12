@@ -94,7 +94,7 @@ function build_registration_message($user_details, $email_activation_only = fals
 
 function build_new_review_message()
 {
-    $review_url = "http://" . $_SERVER['HTTP_HOST'] . "/reviews";
+    $review_url = "http://" . $_SERVER['HTTP_HOST'] . "/review/pending";
     return 'A new review has been assigned to you in <b>Feedback360 System</b>. <br /><br />
         To get started, please click on this link: <a href="' . $review_url . '"> ' . $review_url . ' </a>';
 }

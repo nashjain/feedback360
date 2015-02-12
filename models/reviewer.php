@@ -32,4 +32,9 @@ class Reviewer
         }
         return count($unique_reviewers);
     }
+
+    public static function pending_reviews()
+    {
+        return DB::query("select reviewers.*, user.name as reviewee_name, survey.name as survey_name, org.name as org_name, team.name as team_name from reviewers INNER JOIN user on user.`key`=reviewee INNER JOIN survey on survey.id=survey_id INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where reviewer=%s", Session::get_user_property('username'));
+    }
 }
