@@ -3,7 +3,7 @@
 use phpish\app;
 use phpish\template;
 
-include_once MODELS_DIR . 'reviewer.php';
+include_once MODELS_DIR . 'review.php';
 
 app\any("/review[/.*]", function ($req) {
     if(Session::is_inactive()) {
@@ -19,6 +19,6 @@ app\get("/review", function ($req) {
 });
 
 app\get("/review/pending", function ($req) {
-    $data = Reviewer::pending_reviews();
+    $data = Review::pending();
     return template\compose("review/pending.html", compact('data'), "layout-no-sidebar.html");
 });

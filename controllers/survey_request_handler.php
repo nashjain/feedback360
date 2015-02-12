@@ -5,7 +5,7 @@ use phpish\template;
 
 include_once MODELS_DIR . 'competencies.php';
 include_once MODELS_DIR . 'survey.php';
-include_once MODELS_DIR . 'reviewer.php';
+include_once MODELS_DIR . 'review.php';
 include_once MODELS_DIR . 'user.php';
 
 app\get("/survey", function ($req) {
@@ -57,7 +57,7 @@ app\post("/survey/assign-reviewer", function ($req) {
         set_flash_msg('error', 'You are not authorised to assign reviewers to this survey');
         return app\response_302('/survey/create');
     }
-    $response = Reviewer::assign($req['form']);
+    $response = Review::assign_reviewers($req['form']);
     set_flash_msg($response['status'], $response['value']);
     if($response['status']!='Success') {
         $survey_name = $req['form']['survey_name'];

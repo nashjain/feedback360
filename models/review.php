@@ -3,9 +3,9 @@
 include_once MODELS_DIR . 'user.php';
 include_once MODELS_DIR . 'mailer.php';
 
-class Reviewer
+class Review
 {
-    public static function assign($form)
+    public static function assign_reviewers($form)
     {
         $survey_id = $form['survey_id'];
         $surplus_fields = ['survey_id', 'survey_name', 'org_id', 'team_id'];
@@ -18,7 +18,7 @@ class Reviewer
             }
             $all_reviewers = array_merge($all_reviewers, $reviewers);
         }
-        DB::insert('reviewers', $mapping);
+        DB::insert('reviews', $mapping);
         $count = self::notify($all_reviewers);
         return ['status'=>'Success', 'value'=>"A notification email has been sent to $count reviewers."];
     }
@@ -33,8 +33,8 @@ class Reviewer
         return count($unique_reviewers);
     }
 
-    public static function pending_reviews()
+    public static function pending()
     {
-        return DB::query("select reviewers.*, user.name as reviewee_name, survey.name as survey_name, org.name as org_name, team.name as team_name from reviewers INNER JOIN user on user.`key`=reviewee INNER JOIN survey on survey.id=survey_id INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where reviewer=%s", Session::get_user_property('username'));
+        return DB::query("select reviews.*, user.name as reviewee_name, survey.name as survey_name, org.name as org_name, team.name as team_name from reviews INNER JOIN user on user.`key`=reviewee INNER JOIN survey on survey.id=survey_id INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where reviewer=%s", Session::get_user_property('username'));
     }
 }

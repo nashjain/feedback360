@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS `org_structure`;
 DROP TABLE IF EXISTS `competencies`;
 DROP TABLE IF EXISTS `survey`;
 DROP TABLE IF EXISTS `survey_competencies`;
-DROP TABLE IF EXISTS `reviewers`;
+DROP TABLE IF EXISTS `reviews`;
 
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -101,12 +101,13 @@ CREATE TABLE IF NOT EXISTS `survey_competencies` (
   UNIQUE KEY `survey_competency_id` (`survey_id`, `competency_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7;
 
-CREATE TABLE IF NOT EXISTS `reviewers` (
+CREATE TABLE IF NOT EXISTS `reviews` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `survey_id` int(11) NOT NULL,
   `reviewer` varchar(255) NOT NULL,
   `reviewee` varchar(255) NOT NULL,
+   `status` VARCHAR(10) DEFAULT 'pending' NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `single_reviewer` (`survey_id`, `reviewer`, `reviewee`)
+  UNIQUE KEY `unique_reviewer` (`survey_id`, `reviewer`, `reviewee`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7;
