@@ -53,7 +53,7 @@ app\post("/survey/create", function ($req) {
 
 app\post("/survey/assign-reviewer", function ($req) {
     $survey_id = $req['form']['survey_id'];
-    if(!User::is_authorized_to_assign_reviewers($survey_id)){
+    if(!Survey::is_owned_by($survey_id)){
         set_flash_msg('error', 'You are not authorised to assign reviewers to this survey');
         return app\response_302('/survey/create');
     }

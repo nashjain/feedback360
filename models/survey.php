@@ -38,4 +38,9 @@ class Survey
     {
         return DB::query("select survey.*, org.name as org_name, team.name as team_name from survey INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where survey.username=%s order by created desc", Session::get_user_property('username'));
     }
+
+    public static function is_owned_by($survey_id)
+    {
+        return Session::get_user_property('username') == self::owner($survey_id);
+    }
 }

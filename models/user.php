@@ -303,11 +303,6 @@ class User
         return Session::is_member($org_id);
     }
 
-    public static function is_authorized_to_assign_reviewers($survey_id)
-    {
-        return Session::get_user_property('username')==Survey::owner($survey_id);
-    }
-
     public static function fetch_email_and_activation_token()
     {
         return DB::queryFirstRow("select email, activation_token from user where `key`=%s", Session::get_user_property('username'));

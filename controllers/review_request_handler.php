@@ -32,3 +32,15 @@ app\get("/review/received", function ($req) {
     $data = Review::received();
     return template\compose("review/received.html", compact('data'), "layout-no-sidebar.html");
 });
+
+app\get("/review/give/{id}", function ($req) {
+    $id = $req['matches']['id'];
+    if(!Review::is_the_reviewer_for($id)) {
+        set_flash_msg('error', 'You are not authorised to provide feedback on this review.');
+        return app\response_302('/review/pending');
+    }
+    $ratings = Review::$ratings;
+    $competencies = Review::fetch_competencies_for($id);
+    $data = ['id'=>$id, 'competencies'=> $competencies, 'ratings'=>$ratings];
+    return template\compose("review/give_feedback.html", compact('data'), "layout-no-sidebar.html");
+});
