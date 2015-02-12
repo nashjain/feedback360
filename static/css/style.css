@@ -1720,6 +1720,10 @@
     margin-right: 10px;
 }
 
+.cancel_button {
+    float: right;
+}
+
 form {
     text-align: left;
 }
