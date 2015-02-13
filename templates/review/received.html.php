@@ -17,7 +17,7 @@
                     <tbody>
                         <?php foreach($data as $survey) { ?>
                             <tr>
-                                <td><a href="/survey/<?php echo $survey['id'] ?>/feedback"><?php echo $survey['name'] ?></a></td>
+                                <td><a href="/feedback/survey/<?php echo $survey['id'] ?>"><?php echo $survey['name'] ?></a></td>
                                 <td><?php echo $survey['org_name'] ?></td>
                                 <td><?php echo $survey['team_name'] ?></td>
                                 <td><?php echo date( 'jS F Y', strtotime($survey['created'])) ?></td>

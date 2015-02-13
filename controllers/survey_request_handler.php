@@ -14,12 +14,6 @@ app\get("/survey", function ($req) {
     return template\compose("survey/dashboard.html", compact('data'), "layout-no-sidebar.html");
 });
 
-app\get("/survey/{id}/feedback", function ($req) {
-    $id = $req['matches']['id'];
-    $data = Feedback::fetch_consolidated_reviewee_feedback_for($id, Session::get_user_property('username'));
-    return template\compose("feedback/reviewee.html", compact('data'), "layout-no-sidebar.html");
-});
-
 app\any("/survey/create", function ($req) {
     if(Session::is_inactive()) {
         set_flash_msg('error', 'You need to login to perform this action.');

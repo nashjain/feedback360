@@ -72,6 +72,10 @@
         require CONTROLLER_DIR . 'user_request_handler.php';
     });
 
+    app\path_macro(['/feedback[/.*]'], function() {
+        require CONTROLLER_DIR . 'feedback_request_handler.php';
+    });
+
     app\path_macro(['/survey[/.*]'], function() {
         require CONTROLLER_DIR . 'survey_request_handler.php';
     });
