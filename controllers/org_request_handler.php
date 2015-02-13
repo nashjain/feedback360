@@ -23,7 +23,7 @@ app\get("/org/create", function ($req) {
 
 app\post("/org/create", function ($req) {
     $response = Org::create($req['form']);
-    if ('Success'!= $response)
+    if ('success'!= $response)
         set_flash_msg('error', $response);
     return app\response_302($req['form']['requested_url']);
 });

@@ -50,6 +50,6 @@ class Org
 
         Session::add_user_as_manager_for([Session::ORG_ID=>$org_id, Session::ROLE=>Session::MANAGER, Session::TEAM=>$team_id]);
 
-        return "Success";
+        return 'success';
     }
 }

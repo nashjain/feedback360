@@ -6,6 +6,7 @@ use phpish\template;
 include_once MODELS_DIR . 'competencies.php';
 include_once MODELS_DIR . 'survey.php';
 include_once MODELS_DIR . 'review.php';
+include_once MODELS_DIR . 'feedback.php';
 include_once MODELS_DIR . 'user.php';
 
 app\get("/survey", function ($req) {
@@ -13,7 +14,13 @@ app\get("/survey", function ($req) {
     return template\compose("survey/dashboard.html", compact('data'), "layout-no-sidebar.html");
 });
 
-app\any("/survey/[.*]", function ($req) {
+app\get("/survey/{id}/feedback", function ($req) {
+    $id = $req['matches']['id'];
+    $data = Feedback::fetch_consolidated_reviewee_feedback_for($id);
+    return template\compose("feedback/reviewee.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\any("/survey/[create|assign-reviewer]", function ($req) {
     if(Session::is_inactive()) {
         set_flash_msg('error', 'You need to login to perform this action.');
         return app\response_302('/auth/login?requested_url='.rawurlencode($_SERVER["REQUEST_URI"]));
@@ -37,7 +44,7 @@ app\get("/survey/create", function ($req) {
 
 app\post("/survey/create", function ($req) {
     $response = Survey::create($req['form']);
-    if($response['status']!='Success') {
+    if($response['status']!='success') {
         set_flash_msg($response['status'], $response['value']);
         return app\response_302('/survey/create');
     }
@@ -59,7 +66,7 @@ app\post("/survey/assign-reviewer", function ($req) {
     }
     $response = Review::assign_reviewers($req['form']);
     set_flash_msg($response['status'], $response['value']);
-    if($response['status']!='Success') {
+    if($response['status']!='success') {
         $survey_name = $req['form']['survey_name'];
         $org_id = $req['form']['org_id'];
         $team_id = $req['form']['team_id'];

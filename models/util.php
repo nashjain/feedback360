@@ -57,4 +57,15 @@ class Util
         return $result;
     }
 
+    public static function group_to_associative_array($my_array, $key)
+    {
+        $result = [];
+        foreach ($my_array as $each_array) {
+            $key_value = $each_array[$key];
+            if(!array_key_exists($key_value, $result))
+                $result[$key_value] = [];
+            $result[$key_value][] = $each_array;
+        }
+        return $result;
+    }
 }

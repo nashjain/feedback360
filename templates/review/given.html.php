@@ -15,17 +15,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach($data as $review) { ?>
-                    <tr>
-                        <td>
-                            <a href="/user/<?php echo $review['reviewee'] ?>"><?php echo $review['reviewee_name'] ?></a>
-                            <br><div class="small"><?php echo $review['team_name'] ?>, <?php echo $review['org_name'] ?></div>
-                        </td>
-                        <td><?php echo $review['survey_name'] ?></td>
-                        <td><?php echo date( 'jS F Y', strtotime($review['updated'])) ?></td>
-                        <td><a href="/review/update/<?php echo $review['id'] ?>">Update</a></td>
-                    </tr>
-                <?php } ?>
+                    <?php foreach($data as $review) { ?>
+                        <tr>
+                            <td>
+                                <a href="/user/<?php echo $review['reviewee'] ?>"><?php echo $review['reviewee_name'] ?></a>
+                                <br><div class="small"><?php echo $review['team_name'] ?>, <?php echo $review['org_name'] ?></div>
+                            </td>
+                            <td><?php echo $review['survey_name'] ?></td>
+                            <td><?php echo date( 'jS F Y', strtotime($review['updated'])) ?></td>
+                            <td><a href="/review/update/<?php echo $review['id'] ?>">Update</a></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
             </table>
         </div>
         <?php } ?>

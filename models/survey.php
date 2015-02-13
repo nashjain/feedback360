@@ -21,7 +21,7 @@ class Survey
         }
         DB::insert('survey_competencies', $competency_mapping);
 
-        return ['status'=>'Success', 'value'=>$survey_id];
+        return ['status'=>'success', 'value'=>$survey_id];
     }
 
     public static function owner($survey_id)

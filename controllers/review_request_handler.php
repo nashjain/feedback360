@@ -4,6 +4,7 @@ use phpish\app;
 use phpish\template;
 
 include_once MODELS_DIR . 'review.php';
+include_once MODELS_DIR . 'feedback.php';
 
 app\any("/review[/.*]", function ($req) {
     if(Session::is_inactive()) {
@@ -33,14 +34,29 @@ app\get("/review/received", function ($req) {
     return template\compose("review/received.html", compact('data'), "layout-no-sidebar.html");
 });
 
-app\get("/review/give/{id}", function ($req) {
+app\any("/review/give/{id}", function ($req) {
     $id = $req['matches']['id'];
-    if(!Review::is_the_reviewer_for($id)) {
+    if(!Review::am_i_the_reviewer_for($id)) {
         set_flash_msg('error', 'You are not authorised to provide feedback on this review.');
         return app\response_302('/review/pending');
     }
-    $ratings = Review::$ratings;
+    return app\next($req);
+});
+
+app\get("/review/give/{id}", function ($req) {
+    $id = $req['matches']['id'];
     $competencies = Review::fetch_competencies_for($id);
-    $data = ['id'=>$id, 'competencies'=> $competencies, 'ratings'=>$ratings];
+    $reviewee_name = Review::fetch_reviewee_name_for($id);
+    $data = ['id'=>$id, 'competencies'=> $competencies, 'ratings'=> Review::$ratings, 'reviewee_name'=>$reviewee_name];
     return template\compose("review/give_feedback.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\post("/review/give/{id}", function ($req) {
+    $id = $req['matches']['id'];
+    $response = Feedback::save($id, $req['form']);
+    set_flash_msg($response['status'], $response['msg']);
+    $url = '/review/pending';
+    if($response['status']!='success')
+        $url = '/review/give/'.$id;
+    return app\response_302($url);
 });

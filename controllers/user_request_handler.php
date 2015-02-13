@@ -38,7 +38,7 @@ app\post("/user/update-profile", function($req) {
         $admin_in_action = false;
     }
     $response = User::update_profile($username, $req['form'], $admin_in_action);
-    if($response=='Success') {
+    if($response=='success') {
         set_flash_msg('success', 'Successfully updated your profile.');
         return app\response_302('/user/'.$username);
     } elseif ($response=='ResetEmail') {

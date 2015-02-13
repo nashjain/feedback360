@@ -16,7 +16,7 @@ app\get("/auth/login", function ($req) {
 
 app\post("/auth/login", function ($req) {
     $response = User::authenticate_user($req['form']);
-    if ('Success'!= $response)
+    if ('success'!= $response)
         set_flash_msg('error', $response);
     return app\response_302($req['form']['requested_url']);
 });

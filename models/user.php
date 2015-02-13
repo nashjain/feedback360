@@ -98,7 +98,7 @@ class User
             <br>OR
             <br>Request for a <a href="/auth/resend-verification-email?email=' . $email . '">new verification email</a>.';
         self::set_user_data_session($user_details);
-        return 'Success';
+        return 'success';
     }
 
     public static function resend_verification_email($req_param)
@@ -269,7 +269,7 @@ class User
             self::logout();
             return 'ResetEmail';
         }
-        return 'Success';
+        return 'success';
     }
 
     private static function validate_form($form)

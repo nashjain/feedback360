@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS `competencies`;
 DROP TABLE IF EXISTS `survey`;
 DROP TABLE IF EXISTS `survey_competencies`;
 DROP TABLE IF EXISTS `reviews`;
+DROP TABLE IF EXISTS `feedback`;
 
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -111,4 +112,18 @@ CREATE TABLE IF NOT EXISTS `reviews` (
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_reviewer` (`survey_id`, `reviewer`, `reviewee`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7;
+
+CREATE TABLE IF NOT EXISTS `feedback` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `review_id` int(11) NOT NULL,
+  `competency_id` int(11) NOT NULL,
+  `rating` int(2) NOT NULL,
+  `good` MEDIUMTEXT DEFAULT '',
+  `bad` MEDIUMTEXT DEFAULT '',
+  `status` VARCHAR(10) DEFAULT 'draft' NOT NULL,
+  `created` datetime NOT NULL DEFAULT '2015-01-01 00:00:00',
+  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_feedback` (`review_id`, `competency_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7;
