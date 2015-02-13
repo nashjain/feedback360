@@ -7,8 +7,8 @@ The current version allows you to:
 * add members to a team
 * create a 360 degree survey and select a list of competencies for this survey 
 * assign reviewers to each reviewee for the given survey
-* as a reviewer, provide the feedback
-* as a reviewee, see the feedback
+* as a Reviewer, provide the feedback
+* as a Reviewee, see the feedback
 * as a Manager, see all the feedback
 
 What's pending:
