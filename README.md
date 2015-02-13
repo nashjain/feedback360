@@ -10,12 +10,14 @@ The current version allows you to:
 * as a Reviewer, provide the feedback
 * as a Reviewee, see the feedback
 * as a Manager, see all the feedback
+* self-rating
+* spider chart for viewing the feedback rating
 
 What's pending:
-* Self-Rating
 * As a reviewer, update the feedback
 * As a reviewer, save the feedback as draft
 * Automate adding multiple teams to an org
 * Edit/Update Org, Team, Survey
 * Automate adding custom competencies to each survey
+* Add custom rating
 * Trend charts, etc

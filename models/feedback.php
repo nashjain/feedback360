@@ -35,7 +35,7 @@ class Feedback
 
     public static function fetch_consolidated_reviewee_feedback_for($survey_id)
     {
-        $feedback = DB::query("SELECT competencies.name, feedback.rating, feedback.good, feedback.bad FROM feedback INNER JOIN  competencies on competency_id=competencies.id INNER JOIN reviews on review_id=reviews.id INNER JOIN survey on reviews.survey_id=survey.id where reviews.status='completed' and reviews.reviewee=%s and survey.id=%i order by competency_id", Session::get_user_property('username'), $survey_id);
+        $feedback = DB::query("SELECT competencies.name, feedback.rating, feedback.good, feedback.bad, reviews.reviewee, reviews.reviewer FROM feedback INNER JOIN  competencies on competency_id=competencies.id INNER JOIN reviews on review_id=reviews.id INNER JOIN survey on reviews.survey_id=survey.id where reviews.status='completed' and reviews.reviewee=%s and survey.id=%i order by competency_id", Session::get_user_property('username'), $survey_id);
         $grouped_feedback = Util::group_to_associative_array($feedback, 'name');
         return self::update_average_rating($grouped_feedback);
     }
@@ -50,9 +50,17 @@ class Feedback
         $result = [];
         foreach($grouped_feedback as $name=>$respective_feedback){
             $sum = 0;
-            foreach($respective_feedback as $feedback)
-                $sum += $feedback['rating'];
-            $result[$name] = ['avg'=>$sum/count($respective_feedback), 'feedback'=>$respective_feedback];
+            $self = 0;
+            $new_feedback = [];
+            foreach($respective_feedback as $feedback) {
+                if($feedback['reviewee']==$feedback['reviewer'])
+                    $self = $feedback['rating'];
+                else {
+                    $sum += $feedback['rating'];
+                    $new_feedback[] = $feedback;
+                }
+            }
+            $result[$name] = ['avg'=>round($sum/count($new_feedback), 2), 'self'=>$self, 'feedback'=>$new_feedback];
         }
         return $result;
     }

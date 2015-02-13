@@ -22,6 +22,7 @@ class Review
         $all_reviewers = [];
         $now = date('Y-m-d H:i:s');
         foreach($assignment as $reviewee=>$reviewers){
+            $reviewers[] = $reviewee;
             foreach($reviewers as $reviewer) {
                 $mapping[] = ['survey_id' => $survey_id, 'reviewee' => $reviewee, 'reviewer' => $reviewer, 'created'=>$now];
             }
