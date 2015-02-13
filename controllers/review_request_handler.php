@@ -34,6 +34,16 @@ app\get("/review/received", function ($req) {
     return template\compose("review/received.html", compact('data'), "layout-no-sidebar.html");
 });
 
+app\get("/review/{id}", function ($req) {
+    $id = $req['matches']['id'];
+    if(!Review::am_i_the_manager_for($id)) {
+        set_flash_msg('error', 'You are not authorised to view feedback on this review.');
+        return app\response_302('/survey');
+    }
+    $data = Feedback::fetch_feedback_for_manager_for($id);
+    return template\compose("feedback/manager.html", compact('data'), "layout-no-sidebar.html");
+});
+
 app\any("/review/give/{id}", function ($req) {
     $id = $req['matches']['id'];
     if(!Review::am_i_the_reviewer_for($id)) {

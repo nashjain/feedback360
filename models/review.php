@@ -81,4 +81,14 @@ class Review
     {
         DB::update('reviews', ['status'=>'completed'], '`id`=%i', $review_id);
     }
+
+    public static function details($id)
+    {
+        return DB::query("select reviews.*, survey.name from reviews INNER JOIN survey on survey_id=survey.id where survey_id=%i", $id);
+    }
+
+    public static function am_i_the_manager_for($id)
+    {
+        return (DB::queryFirstField("select count(*) as records from reviews INNER JOIN survey on survey_id=survey.id where reviews.id=%i and survey.username=%s", $id, Session::get_user_property('username'))>0);
+    }
 }

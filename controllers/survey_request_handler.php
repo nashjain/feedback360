@@ -85,6 +85,6 @@ app\post("/survey/{id}/reviewers", function ($req) {
 
 app\get("/survey/{id}", function ($req) {
     $id = $req['matches']['id'];
-    $data = Survey::details($id);
+    $data = Review::details($id);
     return template\compose("survey/details.html", compact('data'), "layout-no-sidebar.html");
 });

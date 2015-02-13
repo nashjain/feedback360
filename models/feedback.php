@@ -33,11 +33,16 @@ class Feedback
         return array_values($feedback);
     }
 
-    public static function fetch_consolidated_reviewee_feedback_for($id)
+    public static function fetch_consolidated_reviewee_feedback_for($survey_id)
     {
-        $feedback = DB::query("SELECT competencies.name, feedback.rating, feedback.good, feedback.bad FROM feedback INNER JOIN  competencies on competency_id=competencies.id INNER JOIN reviews on review_id=reviews.id INNER JOIN survey on reviews.survey_id=survey.id where reviews.status='completed' and reviews.reviewee=%s and survey.id=%i order by competency_id;", Session::get_user_property('username'), $id);
+        $feedback = DB::query("SELECT competencies.name, feedback.rating, feedback.good, feedback.bad FROM feedback INNER JOIN  competencies on competency_id=competencies.id INNER JOIN reviews on review_id=reviews.id INNER JOIN survey on reviews.survey_id=survey.id where reviews.status='completed' and reviews.reviewee=%s and survey.id=%i order by competency_id", Session::get_user_property('username'), $survey_id);
         $grouped_feedback = Util::group_to_associative_array($feedback, 'name');
         return self::update_average_rating($grouped_feedback);
+    }
+
+    public static function fetch_feedback_for_manager_for($review_id)
+    {
+        return DB::query("SELECT competencies.name, feedback.rating, feedback.good, feedback.bad FROM feedback INNER JOIN  competencies on competency_id=competencies.id INNER JOIN reviews on review_id=reviews.id where reviews.id=%i order by competency_id", $review_id);
     }
 
     private static function update_average_rating($grouped_feedback)

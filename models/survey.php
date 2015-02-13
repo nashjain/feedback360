@@ -29,11 +29,6 @@ class Survey
         return DB::queryFirstField("select username from survey where survey.id=%i LIMIT 1", $survey_id);
     }
 
-    public static function details($id)
-    {
-        return DB::queryFirstRow("select * from survey where survey.id=%i", $id);
-    }
-
     public static function fetch_my_surveys()
     {
         return DB::query("select survey.*, org.name as org_name, team.name as team_name from survey INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where survey.username=%s order by created desc", Session::get_user_property('username'));
