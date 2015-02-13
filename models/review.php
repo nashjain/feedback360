@@ -14,10 +14,9 @@ class Review
                                 '5'=> '5: Always Demonstrated This',
                             ];
 
-    public static function assign_reviewers($form)
+    public static function assign_reviewers($survey_id, $form)
     {
-        $survey_id = $form['survey_id'];
-        $surplus_fields = ['survey_id', 'survey_name', 'org_id', 'team_id'];
+        $surplus_fields = ['survey_name', 'org_id', 'team_id'];
         $assignment = array_diff_key($form,array_flip($surplus_fields));
         $mapping = [];
         $all_reviewers = [];

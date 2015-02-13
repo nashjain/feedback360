@@ -20,7 +20,7 @@ app\get("/survey/{id}/feedback", function ($req) {
     return template\compose("feedback/reviewee.html", compact('data'), "layout-no-sidebar.html");
 });
 
-app\any("/survey/[create|assign-reviewer]", function ($req) {
+app\any("/survey/[create|{id}/reviewers]", function ($req) {
     if(Session::is_inactive()) {
         set_flash_msg('error', 'You need to login to perform this action.');
         return app\response_302('/auth/login?requested_url='.rawurlencode($_SERVER["REQUEST_URI"]));
@@ -58,13 +58,18 @@ app\post("/survey/create", function ($req) {
     return template\compose("survey/assign_reviewers.html", compact('data'), "layout-no-sidebar.html");
 });
 
-app\post("/survey/assign-reviewer", function ($req) {
-    $survey_id = $req['form']['survey_id'];
+app\any("/survey/{id}[/.*]", function ($req) {
+    $survey_id = $req['matches']['id'];
     if(!Survey::is_owned_by($survey_id)){
-        set_flash_msg('error', 'You are not authorised to assign reviewers to this survey');
+        set_flash_msg('error', 'You are not authorised to view or update this survey');
         return app\response_302('/survey/create');
     }
-    $response = Review::assign_reviewers($req['form']);
+    return app\next($req);
+});
+
+app\post("/survey/{id}/reviewers", function ($req) {
+    $survey_id = $req['matches']['id'];
+    $response = Review::assign_reviewers($survey_id, $req['form']);
     set_flash_msg($response['status'], $response['value']);
     if($response['status']!='success') {
         $survey_name = $req['form']['survey_name'];

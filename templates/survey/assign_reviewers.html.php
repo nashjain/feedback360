@@ -1,9 +1,8 @@
 <section class="wrapper style special fade">
     <div class="container">
-        <form action="/survey/assign-reviewer" id="theForm" method="post">
+        <form action="/survey/<?php echo $data['survey_id']; ?>/reviewers" id="theForm" method="post">
             <h2>Assign Reviewers for <?php echo $data['survey_name'] ; ?></h2>
 
-            <input type="hidden" name="survey_id" value="<?php echo $data['survey_id']; ?>">
             <input type="hidden" name="survey_name" value="<?php echo $data['survey_name']; ?>">
             <input type="hidden" name="org_id" value="<?php echo $data['org_id']; ?>">
             <input type="hidden" name="team_id" value="<?php echo $data['team_id']; ?>">
