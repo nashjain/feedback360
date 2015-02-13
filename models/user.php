@@ -39,9 +39,10 @@ class User
     }
 
     public static function create_only_if_new($team_members){
-        $exiting_user = DB::queryFirstColumn("select user.key from user where user.key in %ls", array_keys($team_members));
+        $exiting_user = DB::query("select key, email from user where email in %ls", array_keys($team_members));
+        $exiting_user = Util::convert_to_associative_map($exiting_user, 'email', 'key');
 
-        $new_members =array_diff_key($team_members,array_flip($exiting_user));
+        $new_members =array_diff_key($team_members,$exiting_user);
 
         $new_ids = [];
         foreach($new_members as $email=>$name) {
@@ -50,13 +51,13 @@ class User
             $new_ids[] = $user_details['key'];
         }
 
-        return array_merge($exiting_user, $new_ids);
+        return array_merge(array_values($exiting_user), $new_ids);
     }
 
     private static function get_user_key($name)
     {
         $name_key = Util::add_hyphens($name);
-        $results = DB::queryFirstColumn("SELECT user.key FROM user WHERE `key` LIKE %ss", $name_key);
+        $results = DB::queryFirstColumn("SELECT user.key FROM user WHERE `key` = %s", $name_key);
         if (empty($results)) return $name_key;
         sort($results);
         $last_integer = (integer)str_replace($name_key . '-', '', end($results)) + 1;

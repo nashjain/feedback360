@@ -24,7 +24,7 @@ class Util
         return $errors;
     }
 
-    public static function tokenize_email_ids($team_members)
+    public static function tokenize_email_ids($team_members, $unwanted)
     {
         $results = [];
         $team_members = str_replace(">, ", ">,", trim($team_members));
@@ -36,7 +36,7 @@ class Util
             $name = addslashes($name_without_double_quotes);
             $results[$email]= $name;
         }
-        return $results;
+        return array_diff_key($results, $unwanted);
     }
 
     public static function convert_to_associative_map($my_array, $key, $value)

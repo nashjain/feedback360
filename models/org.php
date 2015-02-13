@@ -21,12 +21,14 @@ class Org
         $name = $form['name'];
         $org_id = Util::add_hyphens($name);
 
-        $owner = DB::queryFirstField("select owner from org where org.id=%s LIMIT 1", $org_id);
-        if (!empty($owner))
-            return "Org Name: $name already exists! It was created by <a href='/user/$owner'>$owner</a>";
+        $org_owner = DB::queryFirstField("select owner from org where org.id=%s LIMIT 1", $org_id);
+        if (!empty($org_owner))
+            return "Org Name: $name already exists! It was created by <a href='/user/$org_owner'>$org_owner</a>";
 
-        $team_members = $form['team_members'];
-        $team_members = Util::tokenize_email_ids($team_members);
+        $owner = Session::get_user_property('username');
+        $owner_email = Session::get_user_property('email');
+
+        $team_members = Util::tokenize_email_ids($form['team_members'], [$owner_email=>$owner]);
 
         if (empty($team_members)) return "Team Members cannot be empty!";
 
@@ -35,7 +37,6 @@ class Org
 
         Team::add_only_if_new($team_id, $team_name);
 
-        $owner = Session::get_user_property('username');
         DB::insert('org', ['id'=>$org_id, 'name'=>$name, 'teams'=>$team_id, 'owner'=> $owner]);
 
         $user_ids = User::create_only_if_new($team_members);
