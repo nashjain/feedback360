@@ -16,11 +16,11 @@ app\get("/survey", function ($req) {
 
 app\get("/survey/{id}/feedback", function ($req) {
     $id = $req['matches']['id'];
-    $data = Feedback::fetch_consolidated_reviewee_feedback_for($id);
+    $data = Feedback::fetch_consolidated_reviewee_feedback_for($id, Session::get_user_property('username'));
     return template\compose("feedback/reviewee.html", compact('data'), "layout-no-sidebar.html");
 });
 
-app\any("/survey/[create|{id}/reviewers]", function ($req) {
+app\any("/survey/create", function ($req) {
     if(Session::is_inactive()) {
         set_flash_msg('error', 'You need to login to perform this action.');
         return app\response_302('/auth/login?requested_url='.rawurlencode($_SERVER["REQUEST_URI"]));
@@ -58,7 +58,11 @@ app\post("/survey/create", function ($req) {
     return template\compose("survey/assign_reviewers.html", compact('data'), "layout-no-sidebar.html");
 });
 
-app\any("/survey/{id}[/.*]", function ($req) {
+app\any("/survey/{id}/[reviewers|overview|reviewee/{reviewee_name}]", function ($req) {
+    if(Session::is_inactive()) {
+        set_flash_msg('error', 'You need to login to perform this action.');
+        return app\response_302('/auth/login?requested_url='.rawurlencode($_SERVER["REQUEST_URI"]));
+    }
     $survey_id = $req['matches']['id'];
     if(!Survey::is_owned_by($survey_id)){
         set_flash_msg('error', 'You are not authorised to view or update this survey');
@@ -83,8 +87,15 @@ app\post("/survey/{id}/reviewers", function ($req) {
     return app\response_302('/survey/'.$survey_id);
 });
 
-app\get("/survey/{id}", function ($req) {
+app\get("/survey/{id}/overview", function ($req) {
     $id = $req['matches']['id'];
-    $data = Review::details($id);
+    $data = Review::details_grouped_by_reviewee($id);
     return template\compose("survey/details.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\get("/survey/{id}/reviewee/{reviewee_name}", function ($req) {
+    $id = $req['matches']['id'];
+    $reviewee_name = $req['matches']['reviewee_name'];
+    $data = Feedback::fetch_consolidated_reviewee_feedback_for($id, $reviewee_name, true);
+    return template\compose("feedback/reviewee.html", compact('data'), "layout-no-sidebar.html");
 });

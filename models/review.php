@@ -2,6 +2,7 @@
 
 include_once MODELS_DIR . 'user.php';
 include_once MODELS_DIR . 'mailer.php';
+include_once MODELS_DIR . 'util.php';
 
 class Review
 {
@@ -83,13 +84,11 @@ class Review
         DB::update('reviews', ['status'=>'completed'], '`id`=%i', $review_id);
     }
 
-    public static function details($id)
+    public static function details_grouped_by_reviewee($survey_id)
     {
-        return DB::query("select reviews.*, survey.name from reviews INNER JOIN survey on survey_id=survey.id where survey_id=%i", $id);
-    }
-
-    public static function am_i_the_manager_for($id)
-    {
-        return (DB::queryFirstField("select count(*) as records from reviews INNER JOIN survey on survey_id=survey.id where reviews.id=%i and survey.username=%s", $id, Session::get_user_property('username'))>0);
+        $survey_name = DB::queryFirstField("select name from survey where survey.id=%i", $survey_id);
+        $review = DB::query("select reviews.* from reviews INNER JOIN survey on survey_id=survey.id where survey_id=%i", $survey_id);
+        $grouped_review = Util::group_to_associative_array($review, 'reviewee');
+        return ['survey_id'=>$survey_id, 'survey_name'=>$survey_name, 'grouped_review'=>$grouped_review];
     }
 }
