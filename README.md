@@ -7,12 +7,14 @@ The current version allows you to:
 * add members to a team
 * create a 360 degree survey and select a list of competencies for this survey 
 * assign reviewers to each reviewee for the given survey
-* as a review, provide the feedback
+* as a reviewer, provide the feedback
 * as a reviewee, see the feedback
 * as a Manager, see all the feedback
 
 What's pending:
 * Self-Rating
+* As a reviewer, update the feedback
+* As a reviewer, save the feedback as draft
 * Automate adding multiple teams to an org
 * Edit/Update Org, Team, Survey
 * Automate adding custom competencies to each survey
