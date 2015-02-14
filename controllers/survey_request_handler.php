@@ -9,16 +9,20 @@ include_once MODELS_DIR . 'review.php';
 include_once MODELS_DIR . 'feedback.php';
 include_once MODELS_DIR . 'user.php';
 
+app\any("/survey[/.*]", function ($req) {
+    if(Session::is_inactive()) {
+        set_flash_msg('error', 'You need to login to perform this action.');
+        return app\response_302('/auth/login?requested_url='.rawurlencode($_SERVER["REQUEST_URI"]));
+    }
+    return app\next($req);
+});
+
 app\get("/survey", function ($req) {
     $data = Survey::fetch_my_surveys();
     return template\compose("survey/dashboard.html", compact('data'), "layout-no-sidebar.html");
 });
 
 app\any("/survey/create", function ($req) {
-    if(Session::is_inactive()) {
-        set_flash_msg('error', 'You need to login to perform this action.');
-        return app\response_302('/auth/login?requested_url='.rawurlencode($_SERVER["REQUEST_URI"]));
-    }
     if(Session::does_not_belong_to_any_org()) {
         set_flash_msg('error', 'You need to be part of at least one organisation to perform this action.');
         return app\response_302('/org/create?requested_url='.rawurlencode($_SERVER["REQUEST_URI"]));
@@ -53,10 +57,6 @@ app\post("/survey/create", function ($req) {
 });
 
 app\any("/survey/{id}/[reviewers|overview|reviewee/{reviewee_name}]", function ($req) {
-    if(Session::is_inactive()) {
-        set_flash_msg('error', 'You need to login to perform this action.');
-        return app\response_302('/auth/login?requested_url='.rawurlencode($_SERVER["REQUEST_URI"]));
-    }
     $survey_id = $req['matches']['id'];
     if(!Survey::is_owned_by($survey_id)){
         set_flash_msg('error', 'You are not authorised to view or update this survey');
