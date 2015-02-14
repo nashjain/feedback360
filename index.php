@@ -32,7 +32,7 @@
 
     function meekrodb_setup()
     {
-        include_once VENDOR_PATH.'/sergeytsalkov/meekrodb/db.class.php';
+        include_once MEEKRODB_PATH.'db.class.php';
         DB::$user = DB_USER;
         DB::$password = DB_PASSWORD;
         DB::$dbName = DB_DATABASE_NAME;
@@ -50,7 +50,6 @@
             set_flash_msg('error', $e->getMessage());
             return app\response_302("/");
         }
-
     });
 
     //drop the slash from the end of the URL
