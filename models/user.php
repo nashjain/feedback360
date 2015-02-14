@@ -39,7 +39,7 @@ class User
     }
 
     public static function create_only_if_new($team_members){
-        $exiting_user = DB::query("select key, email from user where email in %ls", array_keys($team_members));
+        $exiting_user = DB::query("select user.key, email from user where email in %ls", array_keys($team_members));
         $exiting_user = Util::convert_to_associative_map($exiting_user, 'email', 'key');
 
         $new_members =array_diff_key($team_members,$exiting_user);
