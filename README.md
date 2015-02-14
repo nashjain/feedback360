@@ -7,17 +7,20 @@ The current version allows you to:
 * add members to a team
 * create a 360 degree survey and select a list of competencies for this survey 
 * assign reviewers to each reviewee for the given survey
-* as a Reviewer, provide the feedback
-* as a Reviewee, see the feedback
-* as a Manager, see all the feedback
-* self-rating
+* reviewer can provide and update the feedback
+* reviewee can see the feedback
+* reviewee can do self-rating
+* manager can see all the feedback in surveys they own
 * spider chart for viewing the feedback rating
 
 What's pending:
-* As a reviewer, update the feedback
-* As a reviewer, save the feedback as draft
-* Automate adding multiple teams to an org
-* Edit/Update Org, Team, Survey
-* Automate adding custom competencies to each survey
-* Add custom rating
-* Trend charts, etc
+* generic database exception handler (to avoid duplicate header issue in chrome)
+* reviewer can save the feedback as draft
+* automate adding multiple teams to an org
+* edit/update Org, Team, Survey
+* automate adding custom competencies to each survey
+* add custom rating
+* trend charts, etc
+* manager can set a deadline for submitting feedback, post that date reviewers won't be able to add/update feedback.
+** send a reminder email to all the reviewers, who have not completed their reviews.
+* currently, when we update a review, we simply delete the associated feedback and insert new records. May be in future we should do an inline update for better traceability.

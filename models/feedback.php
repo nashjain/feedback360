@@ -6,12 +6,21 @@ include_once MODELS_DIR . 'util.php';
 
 class Feedback
 {
-    public static function save($review_id, $form)
+    public static function fetch_for($review_id)
+    {
+        $feedback = DB::query("SELECT competencies.name, competency_id, competencies.description, feedback.rating, feedback.good, feedback.bad, user.name as reviewee_name FROM feedback INNER JOIN  competencies on competency_id=competencies.id INNER JOIN reviews on review_id=reviews.id INNER JOIN user on user.key=reviews.reviewee where reviews.id=%i order by competency_id", $review_id);
+        if(count($feedback)==0) return [];
+        $reviewee_name = $feedback[0]['reviewee_name'];
+        return ['reviewee_name'=>$reviewee_name, 'competencies'=>$feedback];
+    }
+
+    public static function save($review_id, $form, $update)
     {
         $feedback = self::grouped_feedback($review_id, $form);
         $competency_count = Competencies::count_for($review_id);
         if($competency_count!=count($feedback))
             return ['status'=>'error', 'msg'=>'Sorry, looks like you have not provided a rating on all the competencies. Please try again.'];
+        if($update) DB::delete('feedback', 'review_id=%i', $review_id);
         DB::insert('feedback', $feedback);
         Review::mark_completed($review_id);
         return ['status'=>'success', 'msg'=>'Successfully saved your feedback.'];

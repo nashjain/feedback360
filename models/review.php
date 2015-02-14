@@ -71,7 +71,7 @@ class Review
 
     public static function fetch_competencies_for($id)
     {
-        return DB::query("select competencies.* from competencies INNER JOIN survey_competencies on survey_competencies.competency_id=competencies.id where survey_competencies.survey_id = (select survey_id from reviews where id=%i)", $id);
+        return DB::query("select competencies.id as competency_id, name, description, 0 as rating, '' as good, '' as bad from competencies INNER JOIN survey_competencies on survey_competencies.competency_id=competencies.id where survey_competencies.survey_id = (select survey_id from reviews where id=%i)", $id);
     }
 
     public static function fetch_reviewee_name_for($id)
