@@ -5,3 +5,4 @@ composer.lock
 development.conf.php
 production.conf.php
 deploy.sh
+php.ini
