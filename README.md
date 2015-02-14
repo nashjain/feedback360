@@ -14,7 +14,6 @@ The current version allows you to:
 * spider chart for viewing the feedback rating
 
 What's pending:
-* generic database exception handler (to avoid duplicate header issue in chrome)
 * reviewer can save the feedback as draft
 * automate adding multiple teams to an org
 * edit/update Org, Team, Survey

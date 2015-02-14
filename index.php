@@ -37,19 +37,20 @@
         DB::$password = DB_PASSWORD;
         DB::$dbName = DB_DATABASE_NAME;
         DB::$encoding = 'utf8';
-        DB::$error_handler = 'my_error_handler';
-    }
-
-    function my_error_handler($params)
-    {
-        set_flash_msg('error', $params['error']);
-        header('Location: /');
+        DB::$error_handler = false;
+        DB::$throw_exception_on_error = true;
     }
 
     app\any('.*', function($req) {
         session_start();
         meekrodb_setup();
-        return app\next($req);
+        try {
+            return app\next($req);
+        } catch(MeekroDBException $e) {
+            set_flash_msg('error', $e->getMessage());
+            return app\response_302("/");
+        }
+
     });
 
     //drop the slash from the end of the URL
