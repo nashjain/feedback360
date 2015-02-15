@@ -1731,3 +1731,12 @@ form {
 form>h2 {
     text-align: center;
 }
+
+.button-row {
+    margin-bottom: 3em;
+    float: right;
+}
+
+.clear-row {
+    clear: both;
+}

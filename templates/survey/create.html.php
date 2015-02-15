@@ -47,7 +47,7 @@ $competencies = $data['competencies'];
 
                 <div class="3u 12u$(medium)"></div>
                 <div class="3u 12u$(medium)"><a href="/" class="button cancel_button">Cancel</a></div>
-                <div class="3u 12u$(medium)"><input type="submit" value="Create" class="fit special" /></div>
+                <div class="3u 12u$(medium)"><input type="submit" value="Create" class="button special" /></div>
                 <div class="3u$ 12u$(medium)"></div>
             </div>
         </form>

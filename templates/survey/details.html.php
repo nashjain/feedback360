@@ -23,7 +23,7 @@
                                 <td><?php echo $review['status'] ?></td>
                                 <td><?php echo date( 'jS F Y h:i A', strtotime($review['updated'])) ?></td>
                                 <?php if($count==1) { ?>
-                                    <td rowspan="<?php echo count($reviews) ?>"><a href="/survey/<?php echo $data['survey_id'] .'/reviewee/'.$reviewee ?>">View</a></td>
+                                    <td rowspan="<?php echo count($reviews) ?>"><a href="/survey/<?php echo $data['survey_id'] .'/reviewee/'.$reviewee ?>" class="button special">View</a></td>
                                 <?php } ?>
                             </tr>
                     <?php }

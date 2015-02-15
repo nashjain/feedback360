@@ -14,6 +14,15 @@ app\any("/org[/.*]", function ($req) {
     return app\next($req);
 });
 
+app\get("/org", function ($req) {
+    $data = Org::fetch_my_org_list();
+    if(empty($data)){
+        set_flash_msg('error', "You don't seem to be part of any organisation. Please create one.");
+        return app\response_302("/org/create");
+    }
+    return template\compose("org/list.html", compact('data'), "layout-no-sidebar.html");
+});
+
 app\get("/org/create", function ($req) {
     $data = ['teams'=>Team::fetch_all()];
     if (array_key_exists('requested_url', $req['query']))
@@ -26,4 +35,124 @@ app\post("/org/create", function ($req) {
     if ('success'!= $response)
         set_flash_msg('error', $response);
     return app\response_302($req['form']['requested_url']);
+});
+
+app\any("/org/{org_id}/[delete[/yes]|team[/.*]]", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    if(!Org::is_owner_of($org_id)){
+        set_flash_msg('error', 'You are not authorised to perform this operation on this org.');
+        return app\response_302('/org');
+    }
+    return app\next($req);
+});
+
+app\get("/org/{org_id}/team", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $data = Org::teams_belonging_to($org_id);
+    return template\compose("org/teams.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\get("/org/{org_id}/team/add", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $org_name = query_param($req, 'name');
+    $data = ['org_id'=>$org_id, 'org_name'=>$org_name];
+    return template\compose("org/add_team.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\post("/org/{org_id}/team/add", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $response = Org::add_team($req['form'], $org_id);
+    if ('success'!= $response)
+        set_flash_msg('error', $response);
+    return app\response_302("/org/$org_id/team");
+});
+
+app\get("/org/{org_id}/team/{team_id}", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $team_id = $req['matches']['team_id'];
+    $data = Team::members_of($org_id, $team_id);
+    return template\compose("org/team_members.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\get("/org/{org_id}/delete", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $org_name = query_param($req, 'name');
+    $data = ['title'=>"Deleting your Organisation: $org_name...", 'ok_url'=>"/org/$org_id/delete/yes", 'cancel_url'=>"/org/$org_id/team", 'msg'=>'Are you sure you want to delete your entire org? This operation cannot be undone. You will loose all your reviews and team information!'];
+    return template\compose("org/confirmation.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\get("/org/{org_id}/delete/yes", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $response = Org::delete($org_id);
+    set_flash_msg($response['status'], $response['msg']);
+    return app\response_302('/org');
+});
+
+app\get("/org/{org_id}/team/{team_id}/delete", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $team_id = $req['matches']['team_id'];
+    $team_name = query_param($req, 'name');
+    $data = ['title'=>"Deleting your Team: $team_name...", 'ok_url'=>"/org/$org_id/team/$team_id/delete/yes", 'cancel_url'=>"/org/$org_id/team", 'msg'=>'Are you sure you want to delete your entire team? This operation cannot be undone. You will loose all your reviews and team information!'];
+    return template\compose("org/confirmation.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\get("/org/{org_id}/team/{team_id}/delete/yes", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $team_id = $req['matches']['team_id'];
+    $response = Team::delete($team_id, $org_id);
+    set_flash_msg($response['status'], $response['msg']);
+    return app\response_302("/org/$org_id/team");
+});
+
+app\get("/org/{org_id}/team/{team_id}/member/{username}/delete", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $team_id = $req['matches']['team_id'];
+    $username = $req['matches']['username'];
+    $member_name = query_param($req, 'name');
+    $data = ['title'=>"Deleting your member: $member_name...", 'ok_url'=>"/org/$org_id/team/$team_id/member/$username/delete/yes", 'cancel_url'=>"/org/$org_id/team/$team_id", 'msg'=>'Are you sure you want to delete your entire team? This operation cannot be undone. You will loose all your reviews and team information!'];
+    return template\compose("org/confirmation.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\get("/org/{org_id}/team/{team_id}/member/{username}/delete/yes", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $team_id = $req['matches']['team_id'];
+    $username = $req['matches']['username'];
+    $response = Team::delete_member($username, $team_id, $org_id);
+    set_flash_msg($response['status'], $response['msg']);
+    return app\response_302("/org/$org_id/team/$team_id");
+});
+
+app\get("/org/{org_id}/team/{team_id}/member/{username}/update", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $team_id = $req['matches']['team_id'];
+    $username = $req['matches']['username'];
+    $member_name = query_param($req, 'name');
+    $current_role = Team::current_role_of($username, $team_id, $org_id);
+    $data = ['org_id'=>$org_id, 'team_id'=>$team_id, 'username'=>$username, 'member_name'=>$member_name, 'current_role'=>$current_role, 'roles'=>Team::roles()];
+    return template\compose("org/change_role.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\post("/org/{org_id}/team/{team_id}/member/{username}/update", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $team_id = $req['matches']['team_id'];
+    $username = $req['matches']['username'];
+    Team::update_role($req['form'], $username, $team_id, $org_id);
+    return app\response_302("/org/$org_id/team/$team_id");
+});
+
+app\get("/org/{org_id}/team/{team_id}/member/add", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $team_id = $req['matches']['team_id'];
+    $team_name = query_param($req, 'name');
+    $data = ['org_id'=>$org_id, 'team_id'=>$team_id, 'team_name'=>$team_name];
+    return template\compose("org/add_team_members.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\post("/org/{org_id}/team/{team_id}/member/add", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $team_id = $req['matches']['team_id'];
+    $response = Team::add_members($req['form'], $team_id, $org_id);
+    if ('success'!= $response)
+        set_flash_msg('error', $response);
+    return app\response_302("/org/$org_id/team/$team_id");
 });

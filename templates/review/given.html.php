@@ -23,7 +23,7 @@
                             </td>
                             <td><?php echo $review['survey_name'] ?></td>
                             <td><?php echo date( 'jS F Y', strtotime($review['updated'])) ?></td>
-                            <td><a href="/review/update/<?php echo $review['id'] ?>">Update</a></td>
+                            <td><a href="/review/update/<?php echo $review['id'] ?>" class="button special">Update</a></td>
                         </tr>
                     <?php } ?>
                 </tbody>

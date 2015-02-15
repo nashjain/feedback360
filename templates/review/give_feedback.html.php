@@ -42,7 +42,7 @@ $reviewee_name = $data['reviewee_name'];
 
                 <div class="3u 12u$(medium)"></div>
                 <div class="3u 12u$(medium)"><a href="<?php echo $data['cancel_url']?>" class="button cancel_button">Cancel</a></div>
-                <div class="3u 12u$(medium)"><input type="submit" value="Save" class="fit special" /></div>
+                <div class="3u 12u$(medium)"><input type="submit" value="Save" class="button special" /></div>
                 <div class="3u$ 12u$(medium)"></div>
             </div>
         </form>

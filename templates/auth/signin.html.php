@@ -23,7 +23,7 @@
                         <div class="4u$ 12u$(medium)"></div>
 
                         <div class="4u 12u$(medium)"></div>
-                        <div class="4u 12u$(medium)" style="text-align: center"><a href="/auth/forgot-password" class="fit special" style="color: #ffffff">Forgot Password?</a></div>
+                        <div class="4u 12u$(medium)" style="text-align: center"><a href="/auth/forgot-password" class="fit" style="color: #ffffff">Forgot Password?</a></div>
                         <div class="4u$ 12u$(medium)"></div>
                     </div>
                 </form>
@@ -45,9 +45,7 @@
                         <div class="8u$ 12u$(medium)"><input type="password" name="confirmation-password" id="confirmation-password" placeholder="Confirm Password" required minlength="6"></div>
 
                         <div class="4u 12u$(medium)"></div>
-                        <div class="4u 12u$(medium)"><input type="submit" value="Create Account" class="fit special" /></div>
-                        <div class="4u$ 12u$(medium)"></div>
-
+                        <div class="8u$ 12u$(medium)"><input type="submit" value="Create Account" class="fit special" /></div>
                     </div>
                 </form>
                 <?php include_once TEMPLATE_PATH. "inc/jquery_validator.php"; ?>

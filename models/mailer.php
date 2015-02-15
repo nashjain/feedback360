@@ -51,23 +51,29 @@ function send_mail($details, $objective, $conf_details=['email_address'=>'naresh
         ->setFrom(['naresh@feedback360.co' => 'Feedback360'])
         ->setReplyTo($conf_self)
         ->setBody($message_body, 'text/html');
-    $bcc_address  = '';
-    if(is_array($details['email'])) {
-        $email_addresses = email_addresses($details['email']);
-        if(array_key_exists('email_mode', $details) and $details['email_mode']=='bcc'){
-            $to_address = $conf_self;
-            $bcc_address = $email_addresses;
+
+    try {
+        $bcc_address  = '';
+        if(is_array($details['email'])) {
+            $email_addresses = email_addresses($details['email']);
+            if(array_key_exists('email_mode', $details) and $details['email_mode']=='bcc'){
+                $to_address = $conf_self;
+                $bcc_address = $email_addresses;
+            }
+            else{
+                $to_address = $email_addresses;
+            }
+        } else {
+            $to_address = [$details['email'] => $details['name']];
         }
-        else{
-            $to_address = $email_addresses;
-        }
-    } else {
-        $to_address = [$details['email'] => $details['name']];
+        $message->setTo($to_address);
+        if(!empty($bcc_address))
+            $message->setBcc($bcc_address);
+            $mailer->send($message);
+    }catch (Swift_SwiftException $e) {
+        return $e->getMessage();
     }
-    $message->setTo($to_address);
-    if(!empty($bcc_address))
-        $message->setBcc($bcc_address);
-    $mailer->send($message);
+    return 'success';
 }
 
     function email_addresses($all) {

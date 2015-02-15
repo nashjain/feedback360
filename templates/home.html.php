@@ -126,7 +126,7 @@
         <form method="post" action="/auth/subscribe" class="container 50%">
             <div class="row uniform 50%">
                 <div class="8u 12u$(xsmall)"><input type="email" name="email" id="email" placeholder="Your Email Address" /></div>
-                <div class="4u$ 12u$(xsmall)"><input type="submit" value="Subscribe" class="fit special" /></div>
+                <div class="4u$ 12u$(xsmall)"><input type="submit" value="Subscribe" class="button special" /></div>
             </div>
         </form>
     </div>

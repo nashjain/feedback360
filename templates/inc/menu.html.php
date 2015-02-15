@@ -25,6 +25,7 @@
                     <ul>
                         <li><a href="/user/<?php echo Session::get_user_property('username')?>"><i class="icon fa-user">&nbsp;</i> View Profile</a></li>
                         <li><a href="/user/update-profile"><i class="icon fa-edit">&nbsp;</i> Update Profile</a></li>
+                        <li><a href="/org"><i class="icon fa-group">&nbsp;</i> My Orgs</a></li>
                         <li><a href='/user/change-password'><i class="icon fa-lock">&nbsp;</i> Change Password</a></li>
                         <li><a href="/auth/logout"><i class="icon fa-power-off">&nbsp;</i> Logout</a></li>
                     </ul>

@@ -6,7 +6,7 @@
         <form method="post" action="/auth/forgot-password" id="theForm" class="container 50%">
             <div class="row uniform 50%">
                 <div class="7u 12u$(medium)"><input type="email" name="email" id="email" placeholder="Your Email Address" required/></div>
-                <div class="5u$ 12u$(medium)"><input type="submit" value="Send Recovery Mail" class="fit special" /></div>
+                <div class="5u$ 12u$(medium)"><input type="submit" value="Send Recovery Mail" class="button special" /></div>
             </div>
         </form>
         <br/>

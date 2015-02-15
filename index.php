@@ -30,6 +30,12 @@
         return "";
     }
 
+    function query_param($req, $name) {
+        if (array_key_exists($name, $req['query']))
+            return $req['query'][$name];
+        return '';
+    }
+
     function meekrodb_setup()
     {
         include_once MEEKRODB_PATH.'db.class.php';
