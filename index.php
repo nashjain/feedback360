@@ -14,20 +14,19 @@
     }
 
     function display_flash_msg() {
-        $alert_msg = Session::get_alert();
-        if(!empty($alert_msg)) {
-            $msg_block = "<div id='session_alert_msg' class='alert alert-" . $alert_msg['type'] . "'>
-            <span>" . $alert_msg['msg'] . "</span>
-        </div>
-        <script type='text/javascript'>
+        $alert_msgs = Session::get_alert();
+        if(empty($alert_msgs)) return "";
+        $msg_block = "<script type='text/javascript'>$('#session_alert_msgs').empty()</script>";
+        foreach($alert_msgs as $alert_msg) {
+            $msg_block .= "<div class='alert alert-" . $alert_msg['type'] . "'><span>" . $alert_msg['msg'] . "</span></div>";
+        }
+        $msg_block .= "<script type='text/javascript'>
             setTimeout(function () {
-                    $('#session_alert_msg').remove();
+                    $('#session_alert_msgs').hide();
                 }, 10000);
         </script>";
-            Session::remove_alert();
-            return $msg_block;
-        }
-        return "";
+        Session::remove_alert();
+        return $msg_block;
     }
 
     function query_param($req, $name) {

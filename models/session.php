@@ -46,7 +46,10 @@ class Session
 
     public static function set_alert($alert_msg)
     {
-        self::_set(self::ALERT, $alert_msg);
+        $alert = self::get_alert();
+        if(empty($alert)) $alert = [];
+        $alert[] = $alert_msg;
+        self::_set(self::ALERT, $alert);
     }
 
     public static function get_alert()

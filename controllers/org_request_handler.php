@@ -34,6 +34,8 @@ app\post("/org/create", function ($req) {
     $response = Org::create($req['form']);
     if ('success'!= $response)
         set_flash_msg('error', $response);
+    else
+        set_flash_msg('success', 'Successfully created your organisation');
     return app\response_302($req['form']['requested_url']);
 });
 

@@ -38,7 +38,8 @@
                 <div class="9u$ 12u$(medium) important(medium)">
                     <!-- Content -->
                     <section id="content">
-                        <?php echo display_flash_msg() . $content; ?>
+                        <div id='session_alert_msgs'><?php echo display_flash_msg()?></div>
+                        <?php echo $content; ?>
                     </section>
                 </div>
             </div>

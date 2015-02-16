@@ -62,8 +62,10 @@ class Feedback
                     $self = $feedback['rating'];
                 }
                 else {
-                    $sum += $feedback['rating'];
-                    ++$num_reviewers;
+                    if($feedback['rating']>0) {
+                        $sum += $feedback['rating'];
+                        ++$num_reviewers;
+                    }
                 }
                 if ($manager_view or !self::is_self_assessment($feedback)) $new_feedback[] = $feedback;
             }
