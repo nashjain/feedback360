@@ -32,7 +32,9 @@ class Team
 
     public static function delete_member($username, $team_id, $org_id)
     {
-        return ['status'=>'error', 'msg'=>"Sorry! We don't support delete yet..."];
+        DB::delete('reviews', "survey_id in (select id from survey where org_id=%s and team_id=%s) and (reviews.reviewee=%s or reviews.reviewer=%s) and status='pending'", $org_id, $team_id, $username, $username);
+        DB::delete('org_structure', "org_id=%s and team_id=%s and username=%s", $org_id, $team_id, $username);
+        return ['status'=>'success', 'msg'=>"Successfully removed the user from the team."];
     }
 
     public static function current_role_of($username, $team_id, $org_id)

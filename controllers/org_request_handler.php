@@ -111,7 +111,7 @@ app\get("/org/{org_id}/team/{team_id}/member/{username}/delete", function ($req)
     $team_id = $req['matches']['team_id'];
     $username = $req['matches']['username'];
     $member_name = query_param($req, 'name');
-    $data = ['title'=>"Deleting your member: $member_name...", 'ok_url'=>"/org/$org_id/team/$team_id/member/$username/delete/yes", 'cancel_url'=>"/org/$org_id/team/$team_id", 'msg'=>'Are you sure you want to delete your entire team? This operation cannot be undone. You will loose all your reviews and team information!'];
+    $data = ['title'=>"Deleting your member: $member_name...", 'ok_url'=>"/org/$org_id/team/$team_id/member/$username/delete/yes", 'cancel_url'=>"/org/$org_id/team/$team_id", 'msg'=>'Are you sure you want to remove the user from your team? This operation cannot be undone. <br/>All pending reviews will be deleted. Existing reviews will remain as is.'];
     return template\compose("org/confirmation.html", compact('data'), "layout-no-sidebar.html");
 });
 
