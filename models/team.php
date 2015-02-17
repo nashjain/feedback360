@@ -32,8 +32,15 @@ class Team
 
     public static function delete_member($username, $team_id, $org_id)
     {
-        DB::delete('reviews', "survey_id in (select id from survey where org_id=%s and team_id=%s) and (reviews.reviewee=%s or reviews.reviewer=%s) and status='pending'", $org_id, $team_id, $username, $username);
-        DB::delete('org_structure', "org_id=%s and team_id=%s and username=%s", $org_id, $team_id, $username);
+        DB::startTransaction();
+        try {
+            DB::delete('reviews', "survey_id in (select id from survey where org_id=%s and team_id=%s) and (reviews.reviewee=%s or reviews.reviewer=%s) and status='pending'", $org_id, $team_id, $username, $username);
+            DB::delete('org_structure', "org_id=%s and team_id=%s and username=%s", $org_id, $team_id, $username);
+        } catch (MeekroDBException $e) {
+            DB::rollback();
+            return ['status'=>'error', 'msg'=>"Could not delete the user. Error: ".$e->getMessage()];
+        }
+        DB::commit();
         return ['status'=>'success', 'msg'=>"Successfully removed the user from the team."];
     }
 
