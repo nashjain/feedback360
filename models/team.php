@@ -40,7 +40,7 @@ class Team
             return ['status'=>'error', 'msg'=>"Could not delete the team. Error: ".$e->getMessage()];
         }
         DB::commit();
-        return ['status'=>'success', 'msg'=>"Successfully removed the user from the team."];
+        return ['status'=>'success', 'msg'=>"Successfully removed the team."];
     }
 
     public static function delete_member($username, $team_id, $org_id)
