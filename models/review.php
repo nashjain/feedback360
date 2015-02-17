@@ -87,7 +87,7 @@ class Review
     public static function details_grouped_by_reviewee($survey_id)
     {
         $survey_name = DB::queryFirstField("select name from survey where survey.id=%i", $survey_id);
-        $review = DB::query("select reviews.* from reviews INNER JOIN survey on survey_id=survey.id where survey_id=%i", $survey_id);
+        $review = DB::query("select reviews.*, reviewee_user.name as reviewee_name, reviewer_user.name as reviewer_name from reviews INNER JOIN survey on survey_id=survey.id INNER JOIN user AS reviewee_user on reviewee_user.`key`=reviews.reviewee INNER JOIN user AS reviewer_user on reviewer_user.`key`=reviews.reviewer where survey_id=%i", $survey_id);
         $grouped_review = Util::group_to_associative_array($review, 'reviewee');
         return ['survey_id'=>$survey_id, 'survey_name'=>$survey_name, 'grouped_review'=>$grouped_review];
     }

@@ -17,9 +17,9 @@
                     <?php foreach($reviews as $review) { ?>
                             <tr>
                                 <?php if(++$count==1) { ?>
-                                    <td rowspan="<?php echo count($reviews) ?>"><a href="/user/<?php echo $reviewee ?>" target="_blank"><?php echo $reviewee ?></a></td>
+                                    <td rowspan="<?php echo count($reviews) ?>"><a href="/user/<?php echo $reviewee ?>" target="_blank"><?php echo $review['reviewee_name'] ?></a></td>
                                 <?php } ?>
-                                <td><a href="/user/<?php echo $review['reviewer'] ?>" target="_blank"><?php echo $review['reviewer'] ?></a></td>
+                                <td><a href="/user/<?php echo $review['reviewer'] ?>" target="_blank"><?php echo $review['reviewer_name'] ?></a></td>
                                 <td><?php echo $review['status'] ?></td>
                                 <td><?php echo date( 'jS F Y h:i A', strtotime($review['updated'])) ?></td>
                                 <?php if($count==1) { ?>
