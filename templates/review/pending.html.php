@@ -18,7 +18,7 @@
                     <?php foreach($data as $review) { ?>
                         <tr>
                             <td>
-                                <a href="/user/<?php echo $review['reviewee'] ?>"><?php echo $review['reviewee_name'] ?></a>
+                                <a href="/user/<?php echo $review['reviewee'] ?>" target="_blank"><?php echo $review['reviewee_name'] ?></a>
                                 <br><div class="small"><?php echo $review['team_name'] ?>, <?php echo $review['org_name'] ?></div>
                             </td>
                             <td><?php echo $review['survey_name'] ?></td>

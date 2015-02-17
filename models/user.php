@@ -4,6 +4,7 @@ include_once MODELS_DIR . 'util.php';
 include_once MODELS_DIR . 'email.php';
 include_once MODELS_DIR . 'mailer.php';
 include_once MODELS_DIR . 'survey.php';
+include_once MODELS_DIR . 'team.php';
 
 class User
 {
@@ -39,6 +40,7 @@ class User
     }
 
     public static function create_only_if_new($team_members){
+        if(empty($team_members)) return [];
         $exiting_user = DB::query("select user.key, email from user where email in %ls", array_keys($team_members));
         $exiting_user = Util::convert_to_associative_map($exiting_user, 'email', 'key');
 
@@ -314,17 +316,24 @@ class User
         return DB::queryFirstColumn("SELECT `key` FROM user where active=1");
     }
 
-    public static function all_employees_from($org_id, $team_id='')
+    public static function all_members_from($org_id, $team_id)
     {
-        $team_clause = '';
-        if(!empty($team_id))
-            $team_clause = " and team_id='".$team_id."'";
-        $all = DB::query("select user.key, user.name from org_structure INNER JOIN user on user.key=org_structure.username where org_id=%s $team_clause", $org_id);
-        return Util::convert_to_associative_map($all, 'key', 'name');
+        return self::fetch_user_matching($org_id, $team_id, Team::all_roles());
+    }
+
+    public static function team_members_from($org_id, $team_id)
+    {
+        return self::fetch_user_matching($org_id, $team_id, [Session::MANAGER, Session::MEMBER]);
     }
 
     public static function bulk_user_info($users)
     {
         return DB::query("select name, email from user where `key` in %ls", $users);
+    }
+
+    private static function fetch_user_matching($org_id, $team_id, $roles)
+    {
+        $all = DB::query("select user.key, user.name from org_structure INNER JOIN user on user.key=org_structure.username where org_id=%s and team_id=%s and org_structure.role in %ls", $org_id, $team_id, $roles);
+        return Util::convert_to_associative_map($all, 'key', 'name');
     }
 }

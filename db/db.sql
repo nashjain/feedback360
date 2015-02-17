@@ -90,7 +90,8 @@ CREATE TABLE IF NOT EXISTS `survey` (
   `username` varchar(255) NOT NULL,
   `created` datetime NOT NULL DEFAULT '2015-01-01 00:00:00',
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_survey_name` (`name`, `org_id`, `team_id`, `username`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7;
 
 CREATE TABLE IF NOT EXISTS `survey_competencies` (

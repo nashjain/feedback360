@@ -8,6 +8,7 @@ class Session
     const ORG_DETAILS = 'org_details';
     const MANAGER = 'manager';
     const MEMBER = 'member';
+    const STAKEHOLDER = 'stakeholder';
     const ROLE = 'role';
     const ORG_ID = 'org_id';
     const TEAM = 'team_id';

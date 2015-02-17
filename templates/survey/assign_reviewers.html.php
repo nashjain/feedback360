@@ -17,7 +17,7 @@
                             $unique_id = $reviewee_id . '_'. $employ_id;
                         ?>
                             <input type="checkbox" id="<?php echo $unique_id ; ?>" name="<?php echo $reviewee_id; ?>[]" value="<?php echo $employ_id; ?>">
-                            <label class="checkbox-label" for="<?php echo $unique_id; ?>"><?php echo $employ_name; ?></label>
+                            <label class="checkbox-label" for="<?php echo $unique_id; ?>"><a href="/user/<?php echo $employ_id; ?>" target="_blank"><?php echo $employ_name; ?></a></label>
                         <?php } ?>
                     </div>
                 </div>

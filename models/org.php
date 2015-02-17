@@ -42,12 +42,13 @@ class Org
         if (!empty($org_owner))
             return "Org Name: $name already exists! It was created by <a href='/user/$org_owner'>$org_owner</a>";
 
-        $input_team_members = $form['team_members'];
+        $team_members = $form['team_members'];
+        $stakeholders = $form['stakeholders'];
         $team_name = $form['team_name'];
         $owner = Session::get_user_property('username');
         $org_details = ['id' => $org_id, 'name' => $name, 'owner' => $owner];
         $owner_email_name = [Session::get_user_property('email')=>Session::get_user_property('name')];
-        return self::save_team($org_id, $team_name, $org_details, $input_team_members, $owner_email_name, $owner);
+        return self::save_team($org_id, $team_name, $org_details, $team_members, $stakeholders, $owner_email_name, $owner);
     }
 
     public static function delete($org_id)
@@ -55,11 +56,12 @@ class Org
         return ['status'=>'error', 'msg'=>"Sorry! We don't support delete yet..."];
     }
 
-    private static function save_team($org_id, $team_name, $org_details, $input_team_members, $owner_email_name, $owner_username)
+    private static function save_team($org_id, $team_name, $org_details, $input_team_members, $input_stakeholders, $owner_email_name, $owner_username)
     {
         $team_members = Util::tokenize_email_ids($input_team_members, $owner_email_name);
-
         if (empty($team_members)) return "Team Members cannot be empty!";
+
+        $stakeholders = Util::tokenize_email_ids($input_stakeholders, $owner_email_name);
 
         $team_id = Util::add_hyphens($team_name);
 
@@ -70,7 +72,7 @@ class Org
                 $org_details['teams'] = $team_id;
                 DB::insert('org', $org_details);
             }
-            Team::save_org_structure($team_members, $team_id, $org_id, $owner_username);
+            Team::save_org_structure($team_members, $stakeholders, $team_id, $org_id, $owner_username);
         } catch (MeekroDBException $e) {
             DB::rollback();
             return "Could not save the details. Please try again. Error: " . $e->getMessage();
@@ -97,7 +99,8 @@ class Org
         $user_names = User::create_only_if_new($owner_email_name);
 
         $team_members = $form['team_members'];
+        $stakeholders = $form['stakeholders'];
 
-        return self::save_team($org_id, $team_name, [], $team_members, $owner_email_name, current($user_names));
+        return self::save_team($org_id, $team_name, [], $team_members, $stakeholders, $owner_email_name, current($user_names));
     }
 }

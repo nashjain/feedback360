@@ -13,7 +13,7 @@
                 <tbody>
                     <?php foreach($data['team_members'] as $team_member) { ?>
                         <tr>
-                            <td><a href="/user/<?php echo $team_member['username'] ?>"><?php echo $team_member['member_name'] ?></a></td>
+                            <td><a href="/user/<?php echo $team_member['username'] ?>" target="_blank"><?php echo $team_member['member_name'] ?></a></td>
                             <td><?php echo ucwords($team_member['role']) ?></td>
                             <?php if(Session::MANAGER ==$team_member['role'] and $team_member['username']==Session::get_user_property('username')) echo "<td></td>"; else {?>
                                 <td>

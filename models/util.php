@@ -27,6 +27,7 @@ class Util
     public static function tokenize_email_ids($team_members, $owner_email_name)
     {
         $results = [];
+        if(empty($team_members)) return $results;
         $team_members = str_replace(">, ", ">,", trim($team_members));
         $all_members = explode(">,", $team_members);
         foreach($all_members as $member) {

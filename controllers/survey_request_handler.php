@@ -50,8 +50,8 @@ app\post("/survey/create", function ($req) {
     $survey_name = $req['form']['name'];
     $org_id = $req['form']['org_id'];
     $team_id = $req['form']['team_id'];
-    $employees = User::all_employees_from($org_id);
-    $team_members = User::all_employees_from($org_id, $team_id);
+    $employees = User::all_members_from($org_id, $team_id);
+    $team_members = User::team_members_from($org_id, $team_id);
     $data = ['survey_id'=>$survey_id, 'survey_name'=>$survey_name, 'org_id'=>$org_id, 'team_id'=>$team_id, 'employees'=>$employees, 'team_members'=>$team_members];
     return template\compose("survey/assign_reviewers.html", compact('data'), "layout-no-sidebar.html");
 });
@@ -73,8 +73,8 @@ app\post("/survey/{id}/reviewers", function ($req) {
         $survey_name = $req['form']['survey_name'];
         $org_id = $req['form']['org_id'];
         $team_id = $req['form']['team_id'];
-        $employees = User::all_employees_from($org_id);
-        $team_members = User::all_employees_from($org_id, $team_id);
+        $employees = User::all_members_from($org_id, $team_id);
+        $team_members = User::team_members_from($org_id, $team_id);
         $data = ['survey_id'=>$survey_id, 'survey_name'=>$survey_name, 'org_id'=>$org_id, 'team_id'=>$team_id, 'employees'=>$employees, 'team_members'=>$team_members];
         return template\compose("survey/assign_reviewers.html", compact('data'), "layout-no-sidebar.html");
     }

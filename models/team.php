@@ -3,9 +3,9 @@
 include_once MODELS_DIR . "/util.php";
 class Team
 {
-    public static function roles()
+    public static function all_roles()
     {
-        return [Session::MEMBER, Session::MANAGER];
+        return [Session::MEMBER, Session::MANAGER, Session::STAKEHOLDER];
     }
 
     public static function fetch_all()
@@ -53,9 +53,10 @@ class Team
         $owner_details = [Session::get_user_property('email')=>Session::get_user_property('name')];
         $team_members = Util::tokenize_email_ids($form['team_members'], $owner_details);
         if (empty($team_members)) return "Team Members cannot be empty!";
+        $stakeholders = Util::tokenize_email_ids($form['stakeholders'], $owner_details);
         DB::startTransaction();
         try {
-            self::save_org_structure($team_members, $team_id, $org_id);
+            self::save_org_structure($team_members, $stakeholders, $team_id, $org_id);
         } catch (MeekroDBException $e) {
             DB::rollback();
             return "Could not save the details. Please try again. Error: ".$e->getMessage();
@@ -64,19 +65,29 @@ class Team
         return 'success';
     }
 
-    public static function save_org_structure($team_members, $team_id, $org_id, $manager = '')
+    public static function save_org_structure($team_members, $stakeholders, $team_id, $org_id, $manager = '')
     {
         $user_ids = User::create_only_if_new($team_members);
+        $stakeholder_ids = User::create_only_if_new($stakeholders);
 
         $org_struct = [];
 
         if (!empty($manager))
-            $org_struct[] = ['org_id' => $org_id, 'team_id' => $team_id, 'role' => Session::MANAGER, 'username' => $manager];
+            $org_struct[] = self::org_struct($org_id, $team_id, $manager, Session::MANAGER);
 
         foreach ($user_ids as $user_id) {
-            $org_struct[] = ['org_id' => $org_id, 'team_id' => $team_id, 'role' => Session::MEMBER, 'username' => $user_id];
+            $org_struct[] = self::org_struct($org_id, $team_id, $user_id, Session::MEMBER);
         }
 
-        DB::insert('org_structure', $org_struct);
+        foreach ($stakeholder_ids as $user_id) {
+            $org_struct[] = self::org_struct($org_id, $team_id, $user_id, Session::STAKEHOLDER);
+        }
+        if(!empty($org_struct))
+            DB::insert('org_structure', $org_struct);
+    }
+
+    private static function org_struct($org_id, $team_id, $user_id, $role)
+    {
+        return ['org_id' => $org_id, 'team_id' => $team_id, 'username' => $user_id, 'role' => $role];
     }
 }

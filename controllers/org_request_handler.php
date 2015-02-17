@@ -130,7 +130,7 @@ app\get("/org/{org_id}/team/{team_id}/member/{username}/update", function ($req)
     $username = $req['matches']['username'];
     $member_name = query_param($req, 'name');
     $current_role = Team::current_role_of($username, $team_id, $org_id);
-    $data = ['org_id'=>$org_id, 'team_id'=>$team_id, 'username'=>$username, 'member_name'=>$member_name, 'current_role'=>$current_role, 'roles'=>Team::roles()];
+    $data = ['org_id'=>$org_id, 'team_id'=>$team_id, 'username'=>$username, 'member_name'=>$member_name, 'current_role'=>$current_role, 'roles'=>Team::all_roles()];
     return template\compose("org/change_role.html", compact('data'), "layout-no-sidebar.html");
 });
 
