@@ -27,7 +27,20 @@ class Team
 
     public static function delete($team_id, $org_id)
     {
-        return ['status'=>'error', 'msg'=>"Sorry! We don't support delete yet..."];
+        DB::startTransaction();
+        try {
+            $survey_ids = DB::queryFirstColumn('select id from survey where org_id=%s and team_id=%s', $org_id, $team_id);
+            DB::delete('survey_competencies', "survey_id in %li", $survey_ids);
+            DB::delete('feedback', "review_id in (select id from reviews where survey_id in %li)", $survey_ids);
+            DB::delete('reviews', "survey_id in %li", $survey_ids);
+            DB::delete('survey', "id in %li", $survey_ids);
+            DB::delete('org_structure', "org_id=%s and team_id=%s", $org_id, $team_id);
+        } catch (MeekroDBException $e) {
+            DB::rollback();
+            return ['status'=>'error', 'msg'=>"Could not delete the team. Error: ".$e->getMessage()];
+        }
+        DB::commit();
+        return ['status'=>'success', 'msg'=>"Successfully removed the user from the team."];
     }
 
     public static function delete_member($username, $team_id, $org_id)
