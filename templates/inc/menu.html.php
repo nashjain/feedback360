@@ -21,9 +21,9 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#" class="button special"><?php echo Session::get_user_property('name')?> <i class="icon fa-caret-down">&nbsp;</i></a>
+                    <a href="#" class="button special"><?php echo Session::name()?> <i class="icon fa-caret-down">&nbsp;</i></a>
                     <ul>
-                        <li><a href="/user/<?php echo Session::get_user_property('username')?>"><i class="icon fa-user">&nbsp;</i> View Profile</a></li>
+                        <li><a href="/user/<?php echo Session::username()?>"><i class="icon fa-user">&nbsp;</i> View Profile</a></li>
                         <li><a href="/user/update-profile"><i class="icon fa-edit">&nbsp;</i> Update Profile</a></li>
                         <li><a href="/org"><i class="icon fa-group">&nbsp;</i> My Orgs</a></li>
                         <li><a href='/user/change-password'><i class="icon fa-lock">&nbsp;</i> Change Password</a></li>

@@ -69,7 +69,10 @@ class Feedback
                 }
                 if ($manager_view or !self::is_self_assessment($feedback)) $new_feedback[] = $feedback;
             }
-            $result[$name] = ['avg'=>round($sum/ $num_reviewers, 2), 'self'=>$self, 'feedback'=>$new_feedback, 'manager_view'=>$manager_view];
+            $avg = 0;
+            if($num_reviewers>0)
+                $avg = round($sum / $num_reviewers, 2);
+            $result[$name] = ['avg'=> $avg, 'self'=>$self, 'feedback'=>$new_feedback, 'manager_view'=>$manager_view];
         }
         $title = 'My Feedback';
         if($manager_view) $title = 'Feedback for '. $reviewee_name;

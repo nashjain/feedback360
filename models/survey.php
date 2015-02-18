@@ -13,7 +13,7 @@ class Survey
 
         $now = date('Y-m-d H:i:s');
         try{
-            DB::insert('survey', ['name'=>$form['name'], 'org_id'=>$form['org_id'], 'team_id'=>$form['team_id'], 'username'=>Session::get_user_property('username'), 'created'=>$now]);
+            DB::insert('survey', ['name'=>$form['name'], 'org_id'=>$form['org_id'], 'team_id'=>$form['team_id'], 'username'=>Session::username(), 'created'=>$now]);
         }catch (MeekroDBException $e) {
             return ['status'=>'error', 'value'=>$e->getMessage()];
         }
@@ -35,11 +35,11 @@ class Survey
 
     public static function fetch_my_surveys()
     {
-        return DB::query("select survey.*, org.name as org_name, team.name as team_name from survey INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where survey.username=%s order by created desc", Session::get_user_property('username'));
+        return DB::query("select survey.*, org.name as org_name, team.name as team_name from survey INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where survey.username=%s order by created desc", Session::username());
     }
 
     public static function is_owned_by($survey_id)
     {
-        return Session::get_user_property('username') == self::owner($survey_id);
+        return Session::username() == self::owner($survey_id);
     }
 }

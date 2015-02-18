@@ -3,8 +3,6 @@
 include_once MODELS_DIR . 'util.php';
 include_once MODELS_DIR . 'email.php';
 include_once MODELS_DIR . 'mailer.php';
-include_once MODELS_DIR . 'survey.php';
-include_once MODELS_DIR . 'team.php';
 
 class User
 {
@@ -124,10 +122,6 @@ class User
             'email' => $user_details['email'],
             'username' => $username
         ];
-        $org_details = DB::query("SELECT org_id, team_id, role FROM org_structure WHERE `username`=%s", $username);
-        if (!empty($org_details)) {
-            $limited_user_details[Session::ORG_DETAILS] = Util::convert_to_associative_array($org_details, Session::ORG_ID);
-        }
         Session::add_user_details($limited_user_details);
     }
 
@@ -231,18 +225,16 @@ class User
 
     public static function isProfileComplete()
     {
-        $username = Session::get_user_property('username');
+        $username = Session::username();
         $bio = DB::queryFirstField("SELECT user.bio FROM user WHERE `key`=%s", $username);
         return !empty($bio) && strlen($bio) > 1;
     }
 
-    public static function update_profile($username, $form, $admin_in_action)
+    public static function update_profile($username, $form)
     {
         $errors = self::validate_form($form);
         if (!empty($errors)) return $errors;
-        $updated_email_address = $form['inputEmail'] != Session::get_user_property('email');
-        if($admin_in_action)
-            $updated_email_address = false;
+        $updated_email_address = $form['inputEmail'] != Session::email();
         if ($updated_email_address) {
             $user_details = self::fetch_user_details('email', $form['inputEmail'], "active");
             if (!empty($user_details)) {
@@ -261,7 +253,7 @@ class User
             $profile_values['activation_token'] = $activation_token;
             $profile_values['active'] = 0;
             $email_values = [
-                'name' => Session::get_user_property('name'),
+                'name' => Session::name(),
                 'activation_token' => $activation_token,
                 'email' => $form['inputEmail']
             ];
@@ -288,7 +280,7 @@ class User
 
     public static function fetch_logged_in_users_info()
     {
-        return DB::queryFirstRow("SELECT user.id, user.email, user.sign_up_date, user.active FROM user WHERE `key`=%s", Session::get_user_property('username'));
+        return DB::queryFirstRow("SELECT user.id, user.email, user.sign_up_date, user.active FROM user WHERE `key`=%s", Session::username());
     }
 
     public static function logout()
@@ -296,19 +288,9 @@ class User
         Session::destroy();
     }
 
-    public static function is_authorized_to_view_dashboard($org_id)
-    {
-        return Session::is_manager($org_id);
-    }
-
-    public static function is_authorized_to_provide_feedback($org_id)
-    {
-        return Session::is_member($org_id);
-    }
-
     public static function fetch_email_and_activation_token()
     {
-        return DB::queryFirstRow("select email, activation_token from user where `key`=%s", Session::get_user_property('username'));
+        return DB::queryFirstRow("select email, activation_token from user where `key`=%s", Session::username());
     }
 
     public static function fetch_all_ids()
@@ -316,24 +298,8 @@ class User
         return DB::queryFirstColumn("SELECT `key` FROM user where active=1");
     }
 
-    public static function all_members_from($org_id, $team_id)
-    {
-        return self::fetch_user_matching($org_id, $team_id, Team::all_roles());
-    }
-
-    public static function team_members_from($org_id, $team_id)
-    {
-        return self::fetch_user_matching($org_id, $team_id, [Session::MANAGER, Session::MEMBER]);
-    }
-
     public static function bulk_user_info($users)
     {
         return DB::query("select name, email from user where `key` in %ls", $users);
-    }
-
-    private static function fetch_user_matching($org_id, $team_id, $roles)
-    {
-        $all = DB::query("select user.key, user.name from org_structure INNER JOIN user on user.key=org_structure.username where org_id=%s and team_id=%s and org_structure.role in %ls", $org_id, $team_id, $roles);
-        return Util::convert_to_associative_map($all, 'key', 'name');
     }
 }

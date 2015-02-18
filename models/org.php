@@ -6,19 +6,20 @@ include_once MODELS_DIR . 'user.php';
 
 class Org
 {
-    public static function fetch_all()
+    public static function fetch_orgs_owned_by_me()
     {
-        return DB::queryFirstColumn("SELECT `id` FROM team");
+        return DB::query("SELECT `id`, name, time from org where owner=%s", Session::username());
     }
 
-    public static function fetch_my_org_list()
+    public static function fetch_orgs_and_teams_to_which_i_belong()
     {
-        return DB::query("SELECT `id`, name, time from org where owner=%s", Session::get_user_property('username'));
+        $all_orgs = DB::query("SELECT org.name as org_name, team.name as team_name, team.time as team_creation_time, org_structure.role from org_structure INNER JOIN org on org_id=org.id INNER JOIN team on team_id=team.id where username=%s", Session::username());
+        return Util::group_to_associative_array($all_orgs, 'org_name');
     }
 
     public static function is_owner_of($org_id)
     {
-        return Session::get_user_property('username')==DB::queryFirstField("select owner from org where `id`=%s", $org_id);
+        return Session::username()==DB::queryFirstField("select owner from org where `id`=%s", $org_id);
     }
 
     public static function teams_belonging_to($org_id)
@@ -45,15 +46,15 @@ class Org
         $team_members = $form['team_members'];
         $stakeholders = $form['stakeholders'];
         $team_name = $form['team_name'];
-        $owner = Session::get_user_property('username');
+        $owner = Session::username();
         $org_details = ['id' => $org_id, 'name' => $name, 'owner' => $owner];
-        $owner_email_name = [Session::get_user_property('email')=>Session::get_user_property('name')];
+        $owner_email_name = [Session::email()=>Session::name()];
         return self::save_team($org_id, $team_name, $org_details, $team_members, $stakeholders, $owner_email_name, $owner);
     }
 
     public static function delete($org_id)
     {
-        return ['status'=>'error', 'msg'=>"Sorry! We don't support delete yet..."];
+        return Team::delete_entity("org", $org_id);
     }
 
     private static function save_team($org_id, $team_name, $org_details, $input_team_members, $input_stakeholders, $owner_email_name, $owner_username)
@@ -78,9 +79,6 @@ class Org
             return "Could not save the details. Please try again. Error: " . $e->getMessage();
         }
         DB::commit();
-
-        if($owner_username==Session::get_user_property('username'))
-            Session::add_user_as_manager_for([Session::ORG_ID => $org_id, Session::ROLE => Session::MANAGER, Session::TEAM => $team_id]);
 
         return 'success';
     }

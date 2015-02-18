@@ -14,7 +14,7 @@ app\any("/team[/.*]", function ($req) {
 });
 
 app\get("/team/create", function ($req) {
-    $data = ['teams'=>Team::fetch_all()];
+    $data = [];
     if (array_key_exists('requested_url', $req['query']))
         $data['requested_url'] = $req['query']['requested_url'];
     return template\compose("org/create.html", compact('data'), "layout-no-sidebar.html");

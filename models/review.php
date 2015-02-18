@@ -56,17 +56,17 @@ class Review
 
     public static function received()
     {
-        return DB::query("select survey.*, org.name as org_name, team.name as team_name from survey INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where survey.id IN (select DISTINCT (survey_id) from reviews where reviews.reviewee=%s and status='completed') order by survey.created desc", Session::get_user_property('username'));
+        return DB::query("select survey.*, org.name as org_name, team.name as team_name from survey INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where survey.id IN (select DISTINCT (survey_id) from reviews where reviews.reviewee=%s and status='completed') order by survey.created desc", Session::username());
     }
 
     private static function review_details($status, $sort_column)
     {
-        return DB::query("select reviews.*, user.name as reviewee_name, survey.name as survey_name, org.name as org_name, team.name as team_name from reviews INNER JOIN user on user.`key`=reviewee INNER JOIN survey on survey.id=survey_id INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where status='" . $status . "' and reviewer=%s order by reviews.".$sort_column." desc", Session::get_user_property('username'));
+        return DB::query("select reviews.*, user.name as reviewee_name, survey.name as survey_name, org.name as org_name, team.name as team_name from reviews INNER JOIN user on user.`key`=reviewee INNER JOIN survey on survey.id=survey_id INNER JOIN org on org.id=org_id INNER JOIN team on team.id=team_id where status='" . $status . "' and reviewer=%s order by reviews.".$sort_column." desc", Session::username());
     }
 
     public static function am_i_the_reviewer_for($id)
     {
-        return (DB::queryFirstField("select count(*) as records from reviews where id=%i and reviewer=%s", $id, Session::get_user_property('username'))>0);
+        return (DB::queryFirstField("select count(*) as records from reviews where id=%i and reviewer=%s", $id, Session::username())>0);
     }
 
     public static function fetch_competencies_for($id)

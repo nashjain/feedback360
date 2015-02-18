@@ -3,8 +3,8 @@
 use phpish\app;
 use phpish\template;
 
-include_once MODELS_DIR . 'team.php';
 include_once MODELS_DIR . 'org.php';
+include_once MODELS_DIR . 'team.php';
 
 app\any("/org[/.*]", function ($req) {
     if(Session::is_inactive()) {
@@ -15,16 +15,20 @@ app\any("/org[/.*]", function ($req) {
 });
 
 app\get("/org", function ($req) {
-    $data = Org::fetch_my_org_list();
+    $data = Org::fetch_orgs_owned_by_me();
     if(empty($data)){
-        set_flash_msg('error', "You don't seem to be part of any organisation. Please create one.");
-        return app\response_302("/org/create");
+        $data = Org::fetch_orgs_and_teams_to_which_i_belong();
+        if(empty($data)) {
+            set_flash_msg('error', "You don't seem to belong to any organisation. Please create one.");
+            return app\response_302("/org/create");
+        }
+        return template\compose("org/read_only_list.html", compact('data'), "layout-no-sidebar.html");
     }
     return template\compose("org/list.html", compact('data'), "layout-no-sidebar.html");
 });
 
 app\get("/org/create", function ($req) {
-    $data = ['teams'=>Team::fetch_all()];
+    $data = [];
     if (array_key_exists('requested_url', $req['query']))
         $data['requested_url'] = $req['query']['requested_url'];
     return template\compose("org/create.html", compact('data'), "layout-no-sidebar.html");
@@ -101,7 +105,7 @@ app\get("/org/{org_id}/team/{team_id}/delete", function ($req) {
 app\get("/org/{org_id}/team/{team_id}/delete/yes", function ($req) {
     $org_id = $req['matches']['org_id'];
     $team_id = $req['matches']['team_id'];
-    $response = Team::delete($team_id, $org_id);
+    $response = Team::delete($org_id, $team_id);
     set_flash_msg($response['status'], $response['msg']);
     return app\response_302("/org/$org_id/team");
 });

@@ -69,4 +69,16 @@ class Util
         }
         return $result;
     }
+
+    public static function group_to_associative_map($my_array, $key, $value_key, $value_value)
+    {
+        $result = [];
+        foreach ($my_array as $each_array) {
+            $key_value = $each_array[$key];
+            if(!array_key_exists($key_value, $result))
+                $result[$key_value] = [];
+            $result[$key_value][$each_array[$value_key]] = $each_array[$value_value];
+        }
+        return $result;
+    }
 }

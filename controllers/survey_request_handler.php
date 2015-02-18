@@ -7,7 +7,7 @@ include_once MODELS_DIR . 'competencies.php';
 include_once MODELS_DIR . 'survey.php';
 include_once MODELS_DIR . 'review.php';
 include_once MODELS_DIR . 'feedback.php';
-include_once MODELS_DIR . 'user.php';
+include_once MODELS_DIR . 'team.php';
 
 app\any("/survey[/.*]", function ($req) {
     if(Session::is_inactive()) {
@@ -23,11 +23,11 @@ app\get("/survey", function ($req) {
 });
 
 app\any("/survey/create", function ($req) {
-    if(Session::does_not_belong_to_any_org()) {
+    if(Team::does_not_belong_to_any_org()) {
         set_flash_msg('error', 'You need to be part of at least one organisation to perform this action.');
         return app\response_302('/org/create?requested_url='.rawurlencode($_SERVER["REQUEST_URI"]));
     }
-    if(Session::not_a_manager()) {
+    if(Team::not_a_manager()) {
         set_flash_msg('error', 'You need to be a manager of at least one team to perform this action.');
         return app\response_302('/team/create?requested_url='.rawurlencode($_SERVER["REQUEST_URI"]));
     }
@@ -35,8 +35,7 @@ app\any("/survey/create", function ($req) {
 });
 
 app\get("/survey/create", function ($req) {
-    $data = Session::orgs_and_teams_owned_by_me();
-    $data['competencies'] = Competencies::fetch_all();
+    $data = ['teams'=>Team::orgs_and_teams_managed_by_me(), 'competencies'=>Competencies::fetch_all()];
     return template\compose("survey/create.html", compact('data'), "layout-no-sidebar.html");
 });
 
@@ -50,8 +49,8 @@ app\post("/survey/create", function ($req) {
     $survey_name = $req['form']['name'];
     $org_id = $req['form']['org_id'];
     $team_id = $req['form']['team_id'];
-    $employees = User::all_members_from($org_id, $team_id);
-    $team_members = User::team_members_from($org_id, $team_id);
+    $employees = Team::all_members_from($org_id, $team_id);
+    $team_members = Team::team_members_from($org_id, $team_id);
     $data = ['survey_id'=>$survey_id, 'survey_name'=>$survey_name, 'org_id'=>$org_id, 'team_id'=>$team_id, 'employees'=>$employees, 'team_members'=>$team_members];
     return template\compose("survey/assign_reviewers.html", compact('data'), "layout-no-sidebar.html");
 });
@@ -73,8 +72,8 @@ app\post("/survey/{id}/reviewers", function ($req) {
         $survey_name = $req['form']['survey_name'];
         $org_id = $req['form']['org_id'];
         $team_id = $req['form']['team_id'];
-        $employees = User::all_members_from($org_id, $team_id);
-        $team_members = User::team_members_from($org_id, $team_id);
+        $employees = Team::all_members_from($org_id, $team_id);
+        $team_members = Team::team_members_from($org_id, $team_id);
         $data = ['survey_id'=>$survey_id, 'survey_name'=>$survey_name, 'org_id'=>$org_id, 'team_id'=>$team_id, 'employees'=>$employees, 'team_members'=>$team_members];
         return template\compose("survey/assign_reviewers.html", compact('data'), "layout-no-sidebar.html");
     }

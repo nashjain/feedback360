@@ -18,12 +18,8 @@ app\get("/user/change-password", function($req) {
     return template\compose("user/change-password.html", compact('data'), "layout-no-sidebar.html");
 });
 
-app\get("/user/update-profile[/{username}]", function($req) {
-    $username = '';
-    if(array_key_exists('username', $req['matches']))
-        $username = $req['matches']['username'];
-    if(empty($username) or !Session::is_admin())
-        $username = Session::get_user_property('username');
+app\get("/user/update-profile", function($req) {
+    $username = Session::username();
     $data = User::fetch_profile_data($username);
     if($data['active']==0)
         set_flash_msg('error', 'Your account is not active, please check your email for account activation email.');
@@ -31,25 +27,18 @@ app\get("/user/update-profile[/{username}]", function($req) {
 });
 
 app\post("/user/update-profile", function($req) {
-    $username = $req['form']['username'];
-    $admin_in_action = true;
-    if(!Session::is_admin()) {
-        $username = Session::get_user_property('username');
-        $admin_in_action = false;
-    }
-    $response = User::update_profile($username, $req['form'], $admin_in_action);
+    $username = Session::username();
+    $response = User::update_profile($username, $req['form']);
     if($response=='success') {
         set_flash_msg('success', 'Successfully updated your profile.');
         return app\response_302('/user/'.$username);
-    } elseif ($response=='ResetEmail') {
+    }
+    if ($response=='ResetEmail') {
         set_flash_msg('success', 'Successfully updated your profile.<br>Since you have updated your email address, an verification email has been sent.<br>Currently you are logged out of the system. Verify your email address to proceed.');
         return app\response_302('/');
     }
     set_flash_msg('error', $response);
-    $url = '/user/update-profile';
-    if($admin_in_action)
-        $url .= "/$username";
-    return app\response_302($url);
+    return app\response_302('/user/update-profile');
 });
 
 app\get("/user/{username}", function($req) {

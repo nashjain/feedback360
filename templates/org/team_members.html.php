@@ -15,7 +15,7 @@
                         <tr>
                             <td><a href="/user/<?php echo $team_member['username'] ?>" target="_blank"><?php echo $team_member['member_name'] ?></a></td>
                             <td><?php echo ucwords($team_member['role']) ?></td>
-                            <?php if(Session::MANAGER ==$team_member['role'] and $team_member['username']==Session::get_user_property('username')) echo "<td></td>"; else {?>
+                            <?php if(Team::MANAGER ==$team_member['role'] and $team_member['username']==Session::username()) echo "<td></td>"; else {?>
                                 <td>
                                     <a href="/org/<?php echo $data['org_id'] ?>/team/<?php echo $data['team_id'] ?>/member/<?php echo $team_member['username'] ?>/delete?name=<?php echo urlencode($team_member['member_name'])?>"><i class="icon fa-trash">&nbsp;</i></a>&nbsp;&nbsp;
                                     <a href="/org/<?php echo $data['org_id'] ?>/team/<?php echo $data['team_id'] ?>/member/<?php echo $team_member['username'] ?>/update?name=<?php echo urlencode($team_member['member_name'])?>"><i class="icon fa-edit">&nbsp;</i></a>

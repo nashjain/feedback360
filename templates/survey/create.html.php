@@ -1,8 +1,11 @@
 <?php
 include_once TEMPLATE_PATH. "inc/html_helper.php";
 
-$org_ids = build_options_from($data['org_ids']);
-$teams = build_options_from($data['teams']);
+$org_wise_teams = $data['teams'];
+$org_ids_raw = array_keys($org_wise_teams);
+$first_org_id = current($org_ids_raw);
+$org_ids = build_options_from($org_ids_raw);
+$teams = build_options_from_map($org_wise_teams[$first_org_id]);
 $competencies = $data['competencies'];
 ?>
 
@@ -54,5 +57,19 @@ $competencies = $data['competencies'];
         <?php include_once TEMPLATE_PATH. "inc/jquery_validator.php"; ?>
     </div>
 </section>
+
+<script type="text/javascript">
+    var org_teams = <?php echo json_encode($org_wise_teams)?>;
+    $("#org_id").change(function(){
+        var teams = org_teams[$(this).val()];
+        $("#team_id").empty();
+        $.each(teams, function(key, value){
+            $("#team_id").append($('<option/>', {
+                value: key,
+                text : value
+            }));
+        });
+    });
+</script>
 
 
