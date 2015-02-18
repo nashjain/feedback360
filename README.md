@@ -13,17 +13,17 @@ The current version allows you to:
 * manager can see all the feedback in surveys they own
 * spider chart for viewing the feedback rating
 * automate adding multiple teams to an org
-* edit/update Org and Team
+* edit/update/delete Org, Team and Team Members
 
 What's pending:
 * edit/update Survey
 * reviewer can save the feedback as draft
 * when we add new team members, manager should be able to add them to existing surveys
-* delete operation for all entities (org, team, members, surveys, review)
+* delete operation for all entities (surveys, review)
+* manager of a team, who is not the owner of the org, should be able to update/delete the team
 * handle invalid emails address condition
 * should not allow to create a survey with team that belong to other orgs
 * user profile page
-* refactor org table to get rid of team column. Also refactor both org and team table to use an int id for primary key
 * automate adding custom competencies to each survey
 * add custom rating
 * trend charts, etc

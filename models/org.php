@@ -69,10 +69,8 @@ class Org
         DB::startTransaction();
         try {
             Team::add_only_if_new($team_id, $team_name);
-            if(!empty($org_details)) {
-                $org_details['teams'] = $team_id;
+            if(!empty($org_details))
                 DB::insert('org', $org_details);
-            }
             Team::save_org_structure($team_members, $stakeholders, $team_id, $org_id, $owner_username);
         } catch (MeekroDBException $e) {
             DB::rollback();

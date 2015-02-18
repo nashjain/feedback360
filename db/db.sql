@@ -41,7 +41,6 @@ CREATE TABLE IF NOT EXISTS `user_email` (
 CREATE TABLE IF NOT EXISTS `org` (
   `id` varchar(120) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `teams` varchar(1024) NOT NULL,
   `owner` varchar(255) NOT NULL,
   `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
