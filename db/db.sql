@@ -86,6 +86,7 @@ CREATE TABLE IF NOT EXISTS `survey` (
   `name` varchar(100) NOT NULL,
   `org_id` varchar(100) NOT NULL,
   `team_id` varchar(100) NOT NULL,
+  `aggregated_score` BIT NOT NULL DEFAULT 1,
   `username` varchar(255) NOT NULL,
   `created` datetime NOT NULL DEFAULT '2015-01-01 00:00:00',
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

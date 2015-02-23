@@ -48,6 +48,12 @@ $competencies = $data['competencies'];
                     <?php } ?>
                 </div>
 
+                <div class="3u 12u$(medium) form-label"><label><sup>*</sup></label></div>
+                <div class="9u$ 12u$(medium)">
+                    <input type="checkbox" id="aggregated_score" name="aggregated_score" value="yes" checked>
+                    <label class="checkbox-label" for="aggregated_score">Display only aggregated score per competency to Reviewee</label>
+                </div>
+
                 <div class="3u 12u$(medium)"></div>
                 <div class="3u 12u$(medium)"><a href="/" class="button cancel_button">Cancel</a></div>
                 <div class="3u 12u$(medium)"><input type="submit" value="Create" class="button special" /></div>

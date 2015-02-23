@@ -11,9 +11,13 @@ class Survey
 
         if (!empty($errors)) return ['status'=>'error', 'value'=>$errors];
 
+        $aggregated_score = false;
+        if(array_key_exists('aggregated_score', $form) and $form['aggregated_score']=='yes')
+            $aggregated_score = true;
+
         $now = date('Y-m-d H:i:s');
         try{
-            DB::insert('survey', ['name'=>$form['name'], 'org_id'=>$form['org_id'], 'team_id'=>$form['team_id'], 'username'=>Session::username(), 'created'=>$now]);
+            DB::insert('survey', ['name'=>$form['name'], 'org_id'=>$form['org_id'], 'team_id'=>$form['team_id'], 'aggregated_score'=>$aggregated_score, 'username'=>Session::username(), 'created'=>$now]);
         }catch (MeekroDBException $e) {
             return ['status'=>'error', 'value'=>$e->getMessage()];
         }

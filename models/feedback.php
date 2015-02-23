@@ -44,7 +44,7 @@ class Feedback
 
     public static function fetch_consolidated_reviewee_feedback_for($survey_id, $reviewee_name, $manager_view=false)
     {
-        $feedback = DB::query("SELECT competencies.name, feedback.rating, feedback.good, feedback.bad, reviews.reviewee, reviews.reviewer FROM feedback INNER JOIN  competencies on competency_id=competencies.id INNER JOIN reviews on review_id=reviews.id INNER JOIN survey on reviews.survey_id=survey.id where reviews.status='completed' and reviews.reviewee=%s and survey.id=%i order by competency_id", $reviewee_name, $survey_id);
+        $feedback = DB::query("SELECT competencies.name, feedback.rating, feedback.good, feedback.bad, reviews.reviewee, reviews.reviewer, survey.aggregated_score FROM feedback INNER JOIN  competencies on competency_id=competencies.id INNER JOIN reviews on review_id=reviews.id INNER JOIN survey on reviews.survey_id=survey.id where reviews.status='completed' and reviews.reviewee=%s and survey.id=%i order by competency_id", $reviewee_name, $survey_id);
         $grouped_feedback = Util::group_to_associative_array($feedback, 'name');
         return self::update_average_rating($grouped_feedback, $reviewee_name, $manager_view);
     }
@@ -52,12 +52,14 @@ class Feedback
     private static function update_average_rating($grouped_feedback, $reviewee_name, $manager_view)
     {
         $result = [];
+        $aggregated_score = false;
         foreach($grouped_feedback as $name=>$respective_feedback){
             $sum = 0;
             $self = 0;
             $new_feedback = [];
             $num_reviewers = 0;
             foreach($respective_feedback as $feedback) {
+                $aggregated_score = $feedback['aggregated_score'];
                 if(self::is_self_assessment($feedback)) {
                     $self = $feedback['rating'];
                 }
@@ -76,7 +78,7 @@ class Feedback
         }
         $title = 'My Feedback';
         if($manager_view) $title = 'Feedback for '. $reviewee_name;
-        return ['title'=>$title, 'reviews'=>$result];
+        return ['title'=>$title, 'reviews'=>$result, 'aggregated_score'=>$aggregated_score];
     }
 
     private static function is_self_assessment($feedback)

@@ -9,10 +9,11 @@
                 echo '<div id="graph" style="margin-bottom: 2em"></div>';
             $self_rating = [];
             $avg_rating = [];
+            $aggregated_score = $data['aggregated_score'];
             foreach ($all_reviews as $competency_name => $reviewer_feedback) {
                 $self = intval($reviewer_feedback['self']);
                 $avg = $reviewer_feedback['avg'];
-                $manager_view = $reviewer_feedback['manager_view'];
+                $manager_view = false; //$reviewer_feedback['manager_view'];
                 $self_rating[] = $self;
                 $avg_rating[] = $avg;
                 ?>
@@ -22,7 +23,7 @@
                         <thead>
                             <tr>
                                 <?php if($manager_view) echo "<th>Reviewer</th>"; ?>
-                                <th>Rating</th>
+                                <?php if(!$aggregated_score) echo "<th>Rating</th>"; ?>
                                 <th>Strengthen Confidence</th>
                                 <th>Improve Effectiveness</th>
                             </tr>
@@ -31,7 +32,7 @@
                             <?php foreach ($reviewer_feedback['feedback'] as $feedback) { ?>
                                 <tr>
                                     <?php if($manager_view) echo "<td>".$feedback['reviewer']."</td>"; ?>
-                                    <td><?php echo $feedback['rating'] ?></td>
+                                    <?php if(!$aggregated_score) echo "<td>".$feedback['rating']."</td>"; ?>
                                     <td style="text-align: left"><?php echo $feedback['good'] ?></td>
                                     <td style="text-align: left"><?php echo $feedback['bad'] ?></td>
                                 </tr>
