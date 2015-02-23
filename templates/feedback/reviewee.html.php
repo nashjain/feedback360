@@ -32,8 +32,8 @@
                                 <tr>
                                     <?php if($manager_view) echo "<td>".$feedback['reviewer']."</td>"; ?>
                                     <td><?php echo $feedback['rating'] ?></td>
-                                    <td><?php echo $feedback['good'] ?></td>
-                                    <td><?php echo $feedback['bad'] ?></td>
+                                    <td style="text-align: left"><?php echo $feedback['good'] ?></td>
+                                    <td style="text-align: left"><?php echo $feedback['bad'] ?></td>
                                 </tr>
                             <?php } ?>
                         </tbody>

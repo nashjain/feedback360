@@ -47,6 +47,7 @@ $reviewee_name = $data['reviewee_name'];
             </div>
         </form>
         <?php include_once TEMPLATE_PATH. "inc/jquery_validator.php"; ?>
+        <?php include_once TEMPLATE_PATH. "inc/tinymce.php"; ?>
     </div>
 </section>
 
