@@ -302,4 +302,13 @@ class User
     {
         return DB::query("select name, email from user where `key` in %ls", $users);
     }
+
+    public static function resend_activation_email($org_id, $team_id)
+    {
+        $all_members = DB::query("select user.name, user.email, user.activation_token from user INNER JOIN org_structure on user.`key`=org_structure.username where org_structure.org_id=%s and org_structure.team_id=%s and user.active=0", $org_id, $team_id);
+        foreach($all_members as $member) {
+            send_mail($member, 'registration');
+        }
+        return count($all_members);
+    }
 }

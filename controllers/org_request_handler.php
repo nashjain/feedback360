@@ -5,6 +5,7 @@ use phpish\template;
 
 include_once MODELS_DIR . 'org.php';
 include_once MODELS_DIR . 'team.php';
+include_once MODELS_DIR . 'user.php';
 
 app\any("/org[/.*]", function ($req) {
     if(Session::is_inactive()) {
@@ -108,6 +109,15 @@ app\get("/org/{org_id}/team/{team_id}/delete/yes", function ($req) {
     $response = Team::delete($org_id, $team_id);
     set_flash_msg($response['status'], $response['msg']);
     return app\response_302("/org/$org_id/team");
+});
+
+app\get("/org/{org_id}/team/{team_id}/resend-activation-email", function ($req) {
+    $org_id = $req['matches']['org_id'];
+    $team_id = $req['matches']['team_id'];
+    $team_name = query_param($req, 'name');
+    $num_email = User::resend_activation_email($org_id, $team_id);
+    set_flash_msg('success', "Successfully resent activation email to $num_email inactive members of $team_name");
+    return app\response_302("/org/$org_id/team/$team_id");
 });
 
 app\get("/org/{org_id}/team/{team_id}/member/{username}/delete", function ($req) {

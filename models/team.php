@@ -22,7 +22,7 @@ class Team
 
     public static function members_of($org_id, $team_id)
     {
-        $all_members = DB::query("select org_structure.username, user.name as member_name, org_structure.role from org_structure INNER JOIN user on user.`key`=org_structure.username where org_structure.org_id=%s and org_structure.team_id=%s ORDER BY org_structure.role", $org_id, $team_id);
+        $all_members = DB::query("select org_structure.username, user.name as member_name, org_structure.role, user.active from org_structure INNER JOIN user on user.`key`=org_structure.username where org_structure.org_id=%s and org_structure.team_id=%s ORDER BY org_structure.role", $org_id, $team_id);
         $team_name = DB::queryFirstField("select team.name from team where id=%s", $team_id);
         return ['org_id'=>$org_id, 'team_id'=>$team_id, 'team_name'=>$team_name, 'team_members'=>$all_members];
     }
