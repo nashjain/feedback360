@@ -4,7 +4,7 @@ class Competencies
 {
     public static function fetch_all()
     {
-        return DB::query("SELECT `id`, name, description FROM competencies");
+        return DB::query("SELECT `id`, name, description FROM competencies ORDER BY use_count DESC");
     }
 
     public static function count_for($review_id)

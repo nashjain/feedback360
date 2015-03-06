@@ -28,8 +28,10 @@ class Util
     {
         $results = [];
         if(empty($team_members)) return $results;
-        $team_members = str_replace(">, ", ">,", trim($team_members));
-        $all_members = explode(">,", $team_members);
+        $team_members = str_replace(">; ", ">;", trim($team_members));
+        $team_members = str_replace(">, ", ">;", $team_members);
+        $team_members = str_replace(">,", ">;", $team_members);
+        $all_members = explode(">;", $team_members);
         foreach($all_members as $member) {
             $name_email = explode("<", str_replace(" <", "<", trim($member)));
             $email = str_replace(">", "", trim($name_email[1]));

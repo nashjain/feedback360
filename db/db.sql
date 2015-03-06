@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS `competencies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
+  `use_count` int DEFAULT 0 NOT NULL,
   `created` datetime NOT NULL DEFAULT '2015-01-01 00:00:00',
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
