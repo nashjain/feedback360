@@ -28,12 +28,14 @@ class Util
     {
         $results = [];
         if(empty($team_members)) return $results;
-        $team_members = str_replace(">; ", ">;", trim($team_members));
-        $team_members = str_replace(">, ", ">;", $team_members);
         $team_members = str_replace(">,", ">;", $team_members);
+        $team_members = str_replace("),", ">;", $team_members);
+        $team_members = str_replace(">; ", ">;", trim($team_members));
         $all_members = explode(">;", $team_members);
         foreach($all_members as $member) {
-            $name_email = explode("<", str_replace(" <", "<", trim($member)));
+            $name_email_str = str_replace(" <", "<", trim($member));
+            $name_email_str = str_replace(" (", "<", $name_email_str);
+            $name_email = explode("<", $name_email_str);
             $email = str_replace(">", "", trim($name_email[1]));
             $name_without_double_quotes = trim($name_email[0], '"');
             $name = addslashes($name_without_double_quotes);
