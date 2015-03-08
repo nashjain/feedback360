@@ -55,7 +55,7 @@ app\post("/survey/create", function ($req) {
     return template\compose("survey/assign_reviewers.html", compact('data'), "layout-no-sidebar.html");
 });
 
-app\any("/survey/{id}/[reviewers|overview|reviewee/{reviewee_name}]", function ($req) {
+app\any("/survey/{id}/[overview|add-reviewers|edit-reviewers|reviewee/{reviewee_name}]", function ($req) {
     $survey_id = $req['matches']['id'];
     if(!Survey::is_owned_by($survey_id)){
         set_flash_msg('error', 'You are not authorised to view or update this survey');
@@ -64,9 +64,9 @@ app\any("/survey/{id}/[reviewers|overview|reviewee/{reviewee_name}]", function (
     return app\next($req);
 });
 
-app\post("/survey/{id}/reviewers", function ($req) {
+app\post("/survey/{id}/add-reviewers", function ($req) {
     $survey_id = $req['matches']['id'];
-    $response = Review::assign_reviewers($survey_id, $req['form']);
+    $response = Review::update_reviewers($survey_id, $req['form']);
     set_flash_msg($response['status'], $response['value']);
     if($response['status']!='success') {
         $survey_name = $req['form']['survey_name'];
@@ -78,6 +78,23 @@ app\post("/survey/{id}/reviewers", function ($req) {
         return template\compose("survey/assign_reviewers.html", compact('data'), "layout-no-sidebar.html");
     }
     return app\response_302('/survey/'.$survey_id ."/overview");
+});
+
+app\get("/survey/{id}/edit-reviewers", function ($req) {
+    $survey_id = $req['matches']['id'];
+    $data = Review::current_assignment($survey_id);
+    return template\compose("survey/update_reviewers.html", compact('data'), "layout-no-sidebar.html");
+});
+
+app\post("/survey/{id}/edit-reviewers", function ($req) {
+    $survey_id = $req['matches']['id'];
+    $response = Review::update_reviewers($survey_id, $req['form']);
+    set_flash_msg($response['status'], $response['value']);
+    $url_dest = 'overview';
+    if($response['status']!='success') {
+        $url_dest = "edit-reviewers";
+    }
+    return app\response_302('/survey/'.$survey_id ."/".$url_dest);
 });
 
 app\get("/survey/{id}/overview", function ($req) {

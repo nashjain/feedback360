@@ -14,11 +14,13 @@ The current version allows you to:
 * spider chart for viewing the feedback rating
 * automate adding multiple teams to an org
 * edit/update/delete Org, Team and Team Members
+* when we add new team members, manager should be able to edit surveys and add the new members to the existing survey
+* managers can re-assign reviewers for a given survey
+* accept gmail, apple mail and microsoft outlook format for importing users into the system
 
 What's pending:
 * edit/update Survey
 * reviewer can save the feedback as draft
-* when we add new team members, manager should be able to add them to existing surveys
 * delete operation for all entities (surveys, review)
 * manager of a team, who is not the owner of the org, should be able to update/delete the team
 * handle invalid emails address condition

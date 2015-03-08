@@ -15,35 +15,6 @@ class Review
                                 '5'=> '5: Always Demonstrated This',
                             ];
 
-    public static function assign_reviewers($survey_id, $form)
-    {
-        $surplus_fields = ['survey_name', 'org_id', 'team_id'];
-        $assignment = array_diff_key($form,array_flip($surplus_fields));
-        $mapping = [];
-        $all_reviewers = [];
-        $now = date('Y-m-d H:i:s');
-        foreach($assignment as $reviewee=>$reviewers){
-            $reviewers[] = $reviewee;
-            foreach($reviewers as $reviewer) {
-                $mapping[] = ['survey_id' => $survey_id, 'reviewee' => $reviewee, 'reviewer' => $reviewer, 'created'=>$now];
-            }
-            $all_reviewers = array_merge($all_reviewers, $reviewers);
-        }
-        DB::insert('reviews', $mapping);
-        $count = self::notify($all_reviewers);
-        return ['status'=>'success', 'value'=>"A notification email has been sent to $count reviewers."];
-    }
-
-    private static function notify($all_reviewers)
-    {
-        $unique_reviewers = array_unique($all_reviewers);
-        $user_info = User::bulk_user_info($unique_reviewers);
-        foreach($user_info as $user_details) {
-            send_mail($user_details, 'new_review');
-        }
-        return count($unique_reviewers);
-    }
-
     public static function pending()
     {
         return self::review_details("pending", 'created');
@@ -90,5 +61,93 @@ class Review
         $review = DB::query("select reviews.*, reviewee_user.name as reviewee_name, reviewer_user.name as reviewer_name from reviews INNER JOIN survey on survey_id=survey.id INNER JOIN user AS reviewee_user on reviewee_user.`key`=reviews.reviewee INNER JOIN user AS reviewer_user on reviewer_user.`key`=reviews.reviewer where survey_id=%i", $survey_id);
         $grouped_review = Util::group_to_associative_array($review, 'reviewee');
         return ['survey_id'=>$survey_id, 'survey_name'=>$survey_name, 'grouped_review'=>$grouped_review];
+    }
+
+    public static function current_assignment($survey_id)
+    {
+        $survey_details = DB::queryFirstRow("select name, org_id, team_id from survey where survey.id=%i", $survey_id);
+        $org_id = $survey_details['org_id'];
+        $team_id = $survey_details['team_id'];
+        $employees = Team::all_members_from($org_id, $team_id);
+        $team_members = Team::team_members_from($org_id, $team_id);
+        $reviews = DB::query("select reviewee, reviewer from reviews where survey_id=%i order by reviewee", $survey_id);
+        $current_assignment = Util::group_to_associative_array($reviews, 'reviewee');
+        return ['survey_id'=>$survey_id, 'survey_name'=>$survey_details['name'], 'org_id'=>$org_id, 'team_id'=>$team_id, 'employees'=>$employees, 'team_members'=>$team_members, 'current_assignment'=>$current_assignment];
+    }
+
+    public static function update_reviewers($survey_id, $form)
+    {
+        $reviewers = DB::query("select id, reviewee, reviewer from reviews where survey_id=%i order by reviewee", $survey_id);
+        $existing_mapping = self::to_associative_array($reviewers, 'reviewee', 'reviewer', 'id');
+        $assignment = self::reviewer_reviewee_assignment($form);
+        $mapping = [];
+        $new_reviewers = [];
+        $now = date('Y-m-d H:i:s');
+        foreach($assignment as $reviewee=>$reviewers){
+            $reviewers[] = $reviewee;
+            foreach($reviewers as $reviewer) {
+                $new_key = self::key($reviewee, $reviewer);
+                if(array_key_exists($new_key, $existing_mapping))
+                    $existing_mapping[$new_key] = 0;
+                else {
+                    $mapping[] = ['survey_id' => $survey_id, 'reviewee' => $reviewee, 'reviewer' => $reviewer, 'created'=>$now];
+                    $new_reviewers[] = $reviewer;
+                }
+            }
+        }
+
+        $review_ids_to_be_deleted = array_filter(array_values($existing_mapping));
+
+        DB::startTransaction();
+        try {
+            if(!empty($review_ids_to_be_deleted)) {
+                DB::delete('reviews', 'id IN %li', $review_ids_to_be_deleted);
+                DB::delete('feedback', 'review_id IN %li', $review_ids_to_be_deleted);
+            }
+            if(!empty($mapping))
+                DB::insert('reviews', $mapping);
+        } catch (MeekroDBException $e) {
+            DB::rollback();
+            return ['status'=>'error', 'value'=>"Could not assign the reviewers. Error: " . $e->getMessage()];
+        }
+        DB::commit();
+
+        $count = self::notify($new_reviewers);
+        $msg = 'Assigned reviewers';
+        if($count>0)
+            $msg .= " and a notification email has been sent to $count reviewers";
+        return ['status'=>'success', 'value'=>$msg . "."];
+    }
+
+    private static function notify($all_reviewers)
+    {
+        if(empty($all_reviewers)) return 0;
+        $unique_reviewers = array_unique($all_reviewers);
+        $user_info = User::bulk_user_info($unique_reviewers);
+        foreach($user_info as $user_details) {
+            send_mail($user_details, 'new_review');
+        }
+        return count($unique_reviewers);
+    }
+
+    private static function reviewer_reviewee_assignment($form)
+    {
+        $surplus_fields = ['survey_name', 'org_id', 'team_id'];
+        return array_diff_key($form, array_flip($surplus_fields));
+    }
+
+    private static function to_associative_array($reviewers, $key_1, $key_2, $value)
+    {
+        $existing_mapping = [];
+        foreach ($reviewers as $reviewer_reviewee) {
+            $key = self::key($reviewer_reviewee[$key_1], $reviewer_reviewee[$key_2]);
+            $existing_mapping[$key] = $reviewer_reviewee[$value];
+        }
+        return $existing_mapping;
+    }
+
+    private static function key($reviewee, $reviewer)
+    {
+        return $reviewee . "__" . $reviewer;
     }
 }

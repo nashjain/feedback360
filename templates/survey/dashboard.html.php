@@ -22,7 +22,10 @@
                                 <td><?php echo $survey['org_name'] ?></td>
                                 <td><?php echo $survey['team_name'] ?></td>
                                 <td><?php echo date( 'jS F Y', strtotime($survey['created'])) ?></td>
-                                <td><a href="/survey/<?php echo $survey['id'] ?>/overview" class="button special">View</a></td>
+                                <td>
+                                    <a href="/survey/<?php echo $survey['id'] ?>/overview" alt="View" title="View"><i class="icon fa-dashboard">&nbsp;</i></a>
+                                    <a href="/survey/<?php echo $survey['id'] ?>/edit-reviewers" alt="Edit Reviewers" title="Edit Reviewers"><i class="icon fa-users">&nbsp;</i></a>
+                                </td>
                             </tr>
                         <?php } ?>
                     </tbody>
