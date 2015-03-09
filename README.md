@@ -17,6 +17,7 @@ The current version allows you to:
 * when we add new team members, manager should be able to edit surveys and add the new members to the existing survey
 * managers can re-assign reviewers for a given survey
 * accept gmail, apple mail and microsoft outlook format for importing users into the system
+* user profile page
 
 What's pending:
 * edit/update Survey
@@ -25,7 +26,6 @@ What's pending:
 * manager of a team, who is not the owner of the org, should be able to update/delete the team
 * handle invalid emails address condition
 * should not allow to create a survey with team that belong to other orgs
-* user profile page
 * automate adding custom competencies to each survey
 * add custom rating
 * trend charts, etc
