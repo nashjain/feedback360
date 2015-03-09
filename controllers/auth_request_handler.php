@@ -11,7 +11,7 @@ app\get("/auth/login", function ($req) {
         $data['requested_url'] = $req['query']['requested_url'];
     if (array_key_exists('msg', $req['query']))
         set_flash_msg('error', $req['query']['msg']);
-    return template\compose("auth/signin.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("auth/signin.html", compact('data'), "layout.html");
 });
 
 app\post("/auth/login", function ($req) {
@@ -30,7 +30,7 @@ app\post("/auth/registration", function ($req) {
     $data = ['email'=> $req['form']['email']];
     $errors = User::register($req['form']);
     if (empty($errors))
-        return template\compose("auth/email-authentication.html", compact('data'), "layout-no-sidebar.html");
+        return template\compose("auth/email-authentication.html", compact('data'), "layout.html");
     $error_msg = '';
     foreach($errors as $input=>$error) {
         $error_msg .= "<b>Error: $input</b>&nbsp;&nbsp;$error<br/>";
@@ -45,7 +45,7 @@ app\get("/auth/email-confirmation", function ($req) {
     set_flash_msg($message['state'], $message['text']);
     if($message['state']=='reset_pwd') {
         $data = ['user_details'=>User::fetch_user_details('email', $query['email'])];
-        return template\compose("auth/reset-password.html", compact('data'), "layout-no-sidebar.html");
+        return template\compose("auth/reset-password.html", compact('data'), "layout.html");
     }
     return app\response_302('/auth/login');
 });
@@ -58,14 +58,14 @@ app\get("/auth/resend-verification-email", function ($req) {
 
 app\get("/auth/forgot-password", function ($req) {
     $data = [];
-    return template\compose("auth/forgot-password.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("auth/forgot-password.html", compact('data'), "layout.html");
 });
 
 app\post("/auth/forgot-password", function ($req) {
     $data = [];
     $results = User::process_forgot_password_request($req['form']['email']);
     set_flash_msg($results[0], $results[1]);
-    return template\compose("auth/forgot-password.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("auth/forgot-password.html", compact('data'), "layout.html");
 });
 
 app\get("/auth/reset-password", function ($req) {
@@ -76,7 +76,7 @@ app\get("/auth/reset-password", function ($req) {
         return app\response_302('/auth/forgot-password');
     }
     $data['user_details'] = $results;
-    return template\compose("auth/reset-password.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("auth/reset-password.html", compact('data'), "layout.html");
 });
 
 app\post("/auth/reset-password", function ($req) {
@@ -86,7 +86,7 @@ app\post("/auth/reset-password", function ($req) {
     if ('error' != $results[0])
         return app\response_302('/auth/login');
     $data = ['user_details'=>$form];
-    return template\compose("auth/reset-password.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("auth/reset-password.html", compact('data'), "layout.html");
 });
 
 app\get("/auth/unsub/{email_id}", function($req) {

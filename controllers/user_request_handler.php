@@ -15,7 +15,7 @@ app\any("/user/[change-password|update-profile.*]", function($req) {
 
 app\get("/user/change-password", function($req) {
     $data = User::fetch_email_and_activation_token();
-    return template\compose("user/change-password.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("user/change-password.html", compact('data'), "layout.html");
 });
 
 app\get("/user/update-profile", function($req) {
@@ -23,7 +23,7 @@ app\get("/user/update-profile", function($req) {
     $data = User::fetch_profile_data($username);
     if($data['active']==0)
         set_flash_msg('error', 'Your account is not active, please check your email for account activation email.');
-    return template\compose("user/update-profile.html", compact('data'), "layout-left-sidebar.html");
+    return template\compose("user/update-profile.html", compact('data'), "layout.html");
 });
 
 app\post("/user/update-profile", function($req) {
@@ -46,7 +46,7 @@ app\get("/user/{username}", function($req) {
     if(empty($user_key)) return app\response_302('/');
     $data = User::display_profile($user_key);
     if(empty($data)){
-        return app\response_404(template\compose("common/404.html", compact('data'), "layout-no-sidebar.html"));
+        return app\response_404(template\compose("common/404.html", compact('data'), "layout.html"));
     }
-    return template\compose("user/profile.html", compact('data'), "layout-left-sidebar.html");
+    return template\compose("user/profile.html", compact('data'), "layout.html");
 });

@@ -19,7 +19,7 @@ app\any("/survey[/.*]", function ($req) {
 
 app\get("/survey", function ($req) {
     $data = Survey::fetch_my_surveys();
-    return template\compose("survey/dashboard.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("survey/dashboard.html", compact('data'), "layout.html");
 });
 
 app\any("/survey/create", function ($req) {
@@ -36,7 +36,7 @@ app\any("/survey/create", function ($req) {
 
 app\get("/survey/create", function ($req) {
     $data = ['teams'=>Team::orgs_and_teams_managed_by_me(), 'competencies'=>Competencies::fetch_all()];
-    return template\compose("survey/create.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("survey/create.html", compact('data'), "layout.html");
 });
 
 app\post("/survey/create", function ($req) {
@@ -52,7 +52,7 @@ app\post("/survey/create", function ($req) {
     $employees = Team::all_members_from($org_id, $team_id);
     $team_members = Team::team_members_from($org_id, $team_id);
     $data = ['survey_id'=>$survey_id, 'survey_name'=>$survey_name, 'org_id'=>$org_id, 'team_id'=>$team_id, 'employees'=>$employees, 'team_members'=>$team_members];
-    return template\compose("survey/assign_reviewers.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("survey/assign_reviewers.html", compact('data'), "layout.html");
 });
 
 app\any("/survey/{id}/[overview|add-reviewers|edit-reviewers|reviewee/{reviewee_name}]", function ($req) {
@@ -75,7 +75,7 @@ app\post("/survey/{id}/add-reviewers", function ($req) {
         $employees = Team::all_members_from($org_id, $team_id);
         $team_members = Team::team_members_from($org_id, $team_id);
         $data = ['survey_id'=>$survey_id, 'survey_name'=>$survey_name, 'org_id'=>$org_id, 'team_id'=>$team_id, 'employees'=>$employees, 'team_members'=>$team_members];
-        return template\compose("survey/assign_reviewers.html", compact('data'), "layout-no-sidebar.html");
+        return template\compose("survey/assign_reviewers.html", compact('data'), "layout.html");
     }
     return app\response_302('/survey/'.$survey_id ."/overview");
 });
@@ -83,7 +83,7 @@ app\post("/survey/{id}/add-reviewers", function ($req) {
 app\get("/survey/{id}/edit-reviewers", function ($req) {
     $survey_id = $req['matches']['id'];
     $data = Review::current_assignment($survey_id);
-    return template\compose("survey/update_reviewers.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("survey/update_reviewers.html", compact('data'), "layout.html");
 });
 
 app\post("/survey/{id}/edit-reviewers", function ($req) {
@@ -100,12 +100,12 @@ app\post("/survey/{id}/edit-reviewers", function ($req) {
 app\get("/survey/{id}/overview", function ($req) {
     $id = $req['matches']['id'];
     $data = Review::details_grouped_by_reviewee($id);
-    return template\compose("survey/details.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("survey/details.html", compact('data'), "layout.html");
 });
 
 app\get("/survey/{id}/reviewee/{reviewee_name}", function ($req) {
     $id = $req['matches']['id'];
     $reviewee_name = $req['matches']['reviewee_name'];
     $data = Feedback::fetch_consolidated_reviewee_feedback_for($id, $reviewee_name, true);
-    return template\compose("feedback/reviewee.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("feedback/reviewee.html", compact('data'), "layout.html");
 });

@@ -5,5 +5,5 @@ use phpish\template;
 
 app\get("/", function($req) {
     $data = [];
-    return template\compose("home.html", compact('data'), "layout-no-sidebar.html");
+    return template\compose("index.html", compact('data'), "layout.html");
 });
