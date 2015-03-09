@@ -1,7 +1,5 @@
 <?php
 
-include_once MODELS_DIR . 'util.php';
-
 class Survey
 {
     public static function create($form)

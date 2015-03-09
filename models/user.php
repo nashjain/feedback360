@@ -1,6 +1,5 @@
 <?php
 
-include_once MODELS_DIR . 'util.php';
 include_once MODELS_DIR . 'email.php';
 include_once MODELS_DIR . 'mailer.php';
 
@@ -21,12 +20,13 @@ class User
         $sign_up_date = date('Y-m-d H:i:s');
         $activation_token = md5((string)$sign_up_date);
         $password_hash = self::create_hash($user_details['password'], (string)$sign_up_date);
-        $user_key = self::get_user_key($user_details['name']);
+        $name = strip_tags($user_details['name']);
+        $user_key = self::get_user_key($name);
         $user_record = [
-            'name' => $user_details['name'],
+            'name' => $name,
             'key' => $user_key,
             'password' => $password_hash,
-            'email' => $user_details['email'],
+            'email' => strip_tags($user_details['email']),
             'activation_token' => $activation_token,
             'last_activation_request' => strtotime("now"),
             'lost_password_request' => $lost_password_request,

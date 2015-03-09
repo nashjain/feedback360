@@ -2,7 +2,6 @@
 
 include_once MODELS_DIR . 'user.php';
 include_once MODELS_DIR . 'mailer.php';
-include_once MODELS_DIR . 'util.php';
 
 class Review
 {

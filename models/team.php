@@ -1,5 +1,4 @@
 <?php
-include_once MODELS_DIR . "util.php";
 
 class Team
 {
@@ -56,8 +55,8 @@ class Team
 
     public static function update_role($form, $username, $team_id, $org_id)
     {
-        $role = $form['role'];
-        $current_role = $form['current_role'];
+        $role = strip_tags($form['role']);
+        $current_role = strip_tags($form['current_role']);
         if($current_role!=$role)
             DB::update('org_structure', ['role'=>$role], "org_id=%s and team_id=%s and username=%s", $org_id, $team_id, $username);
     }

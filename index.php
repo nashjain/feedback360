@@ -8,6 +8,7 @@
 	require __DIR__.'/conf/'.app\ENV.'.conf.php';
 
     include_once MODELS_DIR . "session.php";
+    include_once MODELS_DIR . "util.php";
 
     function set_flash_msg($type, $msg) {
         Session::set_alert(array('msg'=>$msg, 'type'=>$type));

@@ -1,6 +1,5 @@
 <?php
 
-include_once MODELS_DIR . 'util.php';
 include_once MODELS_DIR . 'team.php';
 include_once MODELS_DIR . 'user.php';
 
@@ -36,7 +35,7 @@ class Org
 
         if (!empty($errors)) return $errors;
 
-        $name = $form['name'];
+        $name = strip_tags($form['name']);
         $org_id = Util::add_hyphens($name);
 
         $org_owner = DB::queryFirstField("select owner from org where org.id=%s LIMIT 1", $org_id);
@@ -45,7 +44,7 @@ class Org
 
         $team_members = $form['team_members'];
         $stakeholders = $form['stakeholders'];
-        $team_name = $form['team_name'];
+        $team_name = strip_tags($form['team_name']);
         $owner = Session::username();
         $org_details = ['id' => $org_id, 'name' => $name, 'owner' => $owner];
         $owner_email_name = [Session::email()=>Session::name()];
@@ -87,9 +86,9 @@ class Org
         $errors = Util::validate_form_contains_required_fields($form, $required_fields);
         if (!empty($errors)) return $errors;
 
-        $team_name = $form['team_name'];
-        $team_owner_name = $form['team_owner_name'];
-        $team_owner_email = $form['team_owner_email'];
+        $team_name = strip_tags($form['team_name']);
+        $team_owner_name = strip_tags($form['team_owner_name']);
+        $team_owner_email = strip_tags($form['team_owner_email']);
         $owner_email_name = [$team_owner_email => $team_owner_name];
 
         $user_names = User::create_only_if_new($owner_email_name);

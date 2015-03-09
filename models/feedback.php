@@ -2,7 +2,6 @@
 
 include_once MODELS_DIR . 'competencies.php';
 include_once MODELS_DIR . 'review.php';
-include_once MODELS_DIR . 'util.php';
 
 class Feedback
 {

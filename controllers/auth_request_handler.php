@@ -27,7 +27,7 @@ app\get("/auth/logout", function ($req) {
 });
 
 app\post("/auth/registration", function ($req) {
-    $data = ['email'=> $req['form']['email']];
+    $data = ['email'=> strip_tags($req['form']['email'])];
     $errors = User::register($req['form']);
     if (empty($errors))
         return template\compose("auth/email-authentication.html", compact('data'), "layout.html");

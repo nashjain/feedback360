@@ -1,3 +1,4 @@
+<?php include_once TEMPLATE_PATH . "inc/html_purifier.php" ?>
 <section class="wrapper style special fade">
     <div class="container">
         <h2><?php echo $data['title'] ?></h2>
@@ -33,8 +34,8 @@
                                 <tr>
                                     <?php if($manager_view) echo "<td>".$feedback['reviewer']."</td>"; ?>
                                     <?php if(!$aggregated_score) echo "<td>".$feedback['rating']."</td>"; ?>
-                                    <td style="text-align: left"><?php echo $feedback['good'] ?></td>
-                                    <td style="text-align: left"><?php echo $feedback['bad'] ?></td>
+                                    <td style="text-align: left"><?php echo purify($feedback['good']) ?></td>
+                                    <td style="text-align: left"><?php echo purify($feedback['bad']) ?></td>
                                 </tr>
                             <?php } ?>
                         </tbody>
