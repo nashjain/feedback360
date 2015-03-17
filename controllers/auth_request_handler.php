@@ -53,7 +53,7 @@ app\get("/auth/email-confirmation", function ($req) {
 app\get("/auth/resend-verification-email", function ($req) {
     $results = User::resend_verification_email($req['query']);
     set_flash_msg($results[0], $results[1]);
-    return app\response_302('/login');
+    return app\response_302('/auth/login');
 });
 
 app\get("/auth/forgot-password", function ($req) {
