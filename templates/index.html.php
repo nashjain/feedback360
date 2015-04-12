@@ -64,6 +64,36 @@
             Employees can use the feedback to identify how they are successfully communicating their strengths (and weaknesses) and where they could focus to improve those communications.</p>
         <p>Use 360&deg; feedback as a catalyst for team bonding and personal development via collaboration.</p>
     </div>
+    <a href="#make_it_work" class="goto-next scrolly">Next</a>
+</section>
+
+<section id="make_it_work" class="spotlight style1 bottom">
+    <span class="image fit main"><img src="/static/images/team.jpg" alt="" /></span>
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="4u 12u$(medium)">
+                    <header>
+                        <h2>Make 360 Feedback Work</h2>
+                        <p>Get everyone's buy-in via a collaborative discussion before you roll this out.</p>
+                    </header>
+                    <p>In many companies, managers simply send out an email to all the team members to participate in 360 Feedback. Alas! the participation is very poor or half-hearted. Don't make the same mistake.</p>
+                </div>
+                <div class="4u 12u$(medium)">
+                    <p>Before rolling out 360 Feedback, first have an open discussion about the problems with the current feedback &amp; review system. And then explain how 360 Feedback can really address some of those issue. Get the team's buy-in to ensure they will give their best shot.</p>
+                    <p>Use the following steps to roll-out an effective 360 Feedback in your team:</p>
+                </div>
+                <div class="4u$ 12u$(medium)">
+                    <ol>
+                        <li>From the overall list of competencies, as a team, decide which 5-7 competencies matters the most to your team</li>
+                        <li>Discuss a few examples of how to give effective feedback via "Strengthen Confidence" and "Increase Effectiveness" sections</li>
+                        <li>Before rolling-it out, as a team agree by when you want to complete the reviews</li>
+                        <li>Conduct a retrospective on how the 360 Feedback worked, Inspect and Adapt.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
     <a href="#four" class="goto-next scrolly">Next</a>
 </section>
 

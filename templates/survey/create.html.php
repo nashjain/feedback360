@@ -14,6 +14,8 @@ $competencies = $data['competencies'];
         <form action="/survey/create" id="theForm" method="post">
             <h2>Create a Survey</h2>
 
+            <p style="text-align: center">Please make sure you've read <a href="/#make_it_work" target="_blank">Make 360 Feedback Work</a>, before rolling this out!</p>
+
             <div class="row uniform 50%">
                 <div class="3u 12u$(medium) form-label"><label for="name">Survey Name<sup>*</sup></label></div>
                 <div class="9u$ 12u$(medium)"><input type="text" name="name" id="name" placeholder="Survey Name (Ex: 1st Quarter Review)" required minlength="2"></div>
