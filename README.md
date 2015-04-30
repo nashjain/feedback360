@@ -1,6 +1,9 @@
 # Feedback360
 A simple 360 Degree Feedback App. Visit http://feedback360.co/ for the hosted solution.
 
+# Setup
+* Rename production_example.conf.php to production.conf.php and update the properties inside it.
+
 The current version allows you to: 
 * create an organisation, 
 * add a team to the org
