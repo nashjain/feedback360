@@ -2,7 +2,9 @@
 A simple 360 Degree Feedback App. Visit http://feedback360.co/ for the hosted solution.
 
 # Setup
-* Rename production_example.conf.php to production.conf.php and update the properties inside it.
+1. Rename production_example.conf.php to production.conf.php and update the properties inside it.
+2. After you've installed Composer (https://getcomposer.org/doc/00-intro.md), from the project's root director run: composer update
+3. You should be ready to go!
 
 The current version allows you to: 
 * create an organisation, 
